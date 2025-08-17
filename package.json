@@ -1,0 +1,23 @@
+{
+  "name": "ai-tutor",
+  "version": "0.1.0",
+  "description": "Grade 4 AI Tutor for Ontario Curriculum",
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "echo 'Run dev from specific workspace'",
+    "build": "echo 'Run build from specific workspace'",
+    "test": "echo 'Run test from specific workspace'"
+  },
+  "keywords": [
+    "education",
+    "ai",
+    "tutor",
+    "grade-4",
+    "ontario"
+  ],
+  "author": "Stew McKendry",
+  "license": "MIT"
+}
