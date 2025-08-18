@@ -7,9 +7,12 @@
     "packages/*"
   ],
   "scripts": {
-    "dev": "echo 'Run dev from specific workspace'",
-    "build": "echo 'Run build from specific workspace'",
-    "test": "echo 'Run test from specific workspace'"
+    "dev": "npm run dev --workspace=@ai-tutor/web",
+    "build": "npm run build --workspace=@ai-tutor/web",
+    "test": "npm run test --workspace=@ai-tutor/web",
+    "preview": "npm run preview --workspace=@ai-tutor/web",
+    "type-check": "npm run type-check --workspace=@ai-tutor/web",
+    "lint": "npm run lint --workspace=@ai-tutor/web"
   },
   "keywords": [
     "education",
