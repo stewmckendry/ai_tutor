@@ -4,7 +4,7 @@
 
 This inventory catalogs all reusable components in the AI Tutor project. Each component is documented with its purpose, location, and usage patterns to ensure consistency and reusability across the application.
 
-**Last Updated**: Issue #5 - Backend AI Orchestration
+**Last Updated**: Issue #6 - Airtable Curriculum Content
 
 ---
 
@@ -445,12 +445,247 @@ Session = {
 ```
 
 #### AirtableService
-**Path**: `backend/app/services/airtable_service.py`  
-**Purpose**: Curriculum content retrieval  
+**Path**: `backend/app/airtable_service.py`  
+**Purpose**: Curriculum content retrieval from Airtable database  
 **Methods**:
-- `get_content(topic: str)` - Fetch curriculum content
-- `search_activities(grade: int, subject: str)` - Find activities
-- `is_available()` - Check service availability
+- `initialize()` - Connect to Airtable API
+- `get_content_for_topic(topic: str)` - Fetch curriculum content
+- `get_activities(topic: str)` - Get topic-specific activities
+- `get_canadian_examples(topic: str)` - Fetch Canadian examples
+- `check_health()` - Verify service connectivity
+- `cleanup()` - Cleanup service resources
+
+**Features**:
+- In-memory caching with TTL
+- Fallback content for offline operation
+- Automatic retry logic
+- Connection pooling
+
+---
+
+## 📚 Content Components
+
+### Content API Endpoints
+
+#### GET /api/content/curriculum/topics
+**Path**: `backend/app/api/content.py:22-45`  
+**Purpose**: Retrieve curriculum topics with optional filtering  
+**Query Parameters**:
+- `topic` (optional): Filter by topic name
+
+**Response Model**:
+```python
+{
+    "data": CurriculumContentResponse,
+    "cached": bool
+}
+```
+
+#### GET /api/content/activities
+**Path**: `backend/app/api/content.py:48-59`  
+**Purpose**: Get activities for a specific curriculum topic  
+**Query Parameters**:
+- `topic` (required): Curriculum topic name
+
+**Response Model**:
+```python
+{
+    "data": List[ActivityResponse],
+    "count": int
+}
+```
+
+#### GET /api/content/canadian-examples
+**Path**: `backend/app/api/content.py:62-80`  
+**Purpose**: Retrieve Canadian examples for a topic  
+**Query Parameters**:
+- `topic` (required): Curriculum topic
+
+**Response Model**:
+```python
+{
+    "data": List[str]
+}
+```
+
+#### GET /api/content/health
+**Path**: `backend/app/api/content.py:83-101`  
+**Purpose**: Check Airtable service health status  
+
+**Response Model**:
+```python
+{
+    "status": "healthy" | "unhealthy",
+    "service": "airtable",
+    "initialized": bool,
+    "error": Optional[str]
+}
+```
+
+---
+
+### Content Models
+
+#### CurriculumTopic
+**Path**: `backend/app/models/content.py:69-83`  
+**Purpose**: Ontario Grade 4 Science curriculum topic model  
+**Fields**:
+- `topic_name`: Main topic (Light/Sound)
+- `subtopic`: Specific subtopic
+- `curriculum_expectation`: Ontario curriculum code
+- `key_concepts`: List of core concepts
+- `difficulty_level`: Introductory/Intermediate/Advanced
+- `canadian_connection`: Canadian context
+- `indigenous_perspective`: Indigenous knowledge
+- `estimated_duration`: Lesson duration in minutes
+
+#### ActivityTemplate
+**Path**: `backend/app/models/content.py:96-112`  
+**Purpose**: Hands-on activity template with TODO markers  
+**Fields**:
+- `activity_name`: Activity title
+- `curriculum_topic`: Related topic
+- `activity_type`: Type of activity (Experiment/Investigation/etc.)
+- `mode`: AI interaction mode (learning/explanatory/story)
+- `materials_needed`: Required materials
+- `instructions`: Step-by-step with TODO markers
+- `safety_notes`: Safety considerations
+- `discussion_prompts`: Reflection questions
+- `canadian_example`: Canadian context
+- `difficulty`: Difficulty level
+- `group_size`: Individual/pairs/group
+
+#### CanadianExample
+**Path**: `backend/app/models/content.py:114-125`  
+**Purpose**: Real-world Canadian examples for contextual learning  
+**Fields**:
+- `example_title`: Example name
+- `curriculum_topic`: Related topic
+- `province_territory`: Location in Canada
+- `description`: Detailed description
+- `indigenous_connection`: Indigenous perspectives
+- `french_connection`: French-Canadian connections
+- `visual_description`: Visual description for AI
+- `fun_fact`: Engaging fact
+
+#### StoryCharacter
+**Path**: `backend/app/models/content.py:127-138`  
+**Purpose**: Narrative mode characters for storytelling  
+**Fields**:
+- `character_name`: Character's name
+- `character_type`: Role in stories
+- `personality_traits`: Character traits list
+- `backstory`: Character background
+- `catchphrase`: Signature phrase
+- `home_province`: Canadian province/territory
+- `special_ability`: Unique abilities
+- `curriculum_connection`: Related topics
+- `visual_description`: Appearance description
+
+#### ContentAdaptation
+**Path**: `backend/app/models/content.py:140-149`  
+**Purpose**: Modified content for different learning styles  
+**Fields**:
+- `base_content_id`: Original activity reference
+- `learning_style`: Visual/Auditory/Kinesthetic/Reading-Writing
+- `adaptation_type`: Type of modification
+- `modified_instructions`: Adapted instructions
+- `additional_supports`: Extra resources list
+- `time_adjustment`: Time modification in minutes
+- `success_modifications`: Adjusted success criteria
+
+---
+
+### Content Data Files
+
+#### curriculum_data.json
+**Path**: `content/curriculum_data.json`  
+**Purpose**: Ontario Grade 4 Science curriculum structure  
+**Structure**:
+```json
+{
+  "grade4_science_curriculum": {
+    "light_unit": {
+      "overall_expectations": [...],
+      "topics": [
+        {
+          "topic_name": "Light",
+          "subtopic": "Sources of Light",
+          "curriculum_expectation": "2.2 Distinguish...",
+          "key_concepts": [...],
+          "canadian_connection": "Northern Lights...",
+          "indigenous_perspective": "Traditional Inuit..."
+        }
+      ]
+    },
+    "sound_unit": {...}
+  }
+}
+```
+**Content**: 14 curriculum topics (7 Light, 7 Sound)
+
+#### activity_templates.json
+**Path**: `content/activity_templates.json`  
+**Purpose**: Hands-on learning activities with TODO markers  
+**Structure**:
+```json
+{
+  "activity_templates": [
+    {
+      "activity_name": "Rainbow Creation Lab",
+      "curriculum_topic": "Light - Refraction",
+      "instructions": "TODO(student): Fill glass...",
+      "materials_needed": "Glass, water, flashlight...",
+      "canadian_example": "Rainbow at Niagara Falls"
+    }
+  ]
+}
+```
+**Content**: 16 hands-on activities
+
+#### canadian_examples.json
+**Path**: `content/canadian_examples.json`  
+**Purpose**: Canadian contextual examples  
+**Structure**:
+```json
+{
+  "canadian_examples": {
+    "light_examples": [...],
+    "sound_examples": [...]
+  }
+}
+```
+**Content**: 27 examples (13 Light, 14 Sound) from all provinces/territories
+
+#### story_characters.json
+**Path**: `content/story_characters.json`  
+**Purpose**: Narrative mode characters  
+**Structure**:
+```json
+{
+  "story_characters": [
+    {
+      "character_name": "Maple",
+      "character_type": "Main Guide",
+      "personality_traits": ["curious", "helpful"],
+      "home_province": "Ontario",
+      "special_ability": "Can sense vibrations"
+    }
+  ]
+}
+```
+**Content**: 8 Canadian animal characters
+
+#### airtable_structure.md
+**Path**: `content/airtable_structure.md`  
+**Purpose**: Complete Airtable database schema documentation  
+**Tables Documented**:
+- Grade4_Science_Curriculum
+- Learning_Objectives
+- Activity_Templates
+- Canadian_Examples
+- Story_Characters
+- Content_Adaptations
 
 ---
 
@@ -563,6 +798,19 @@ class ChatResponse(BaseModel):
 
 ## 🔄 Version History
 
+### Issue #6 - Airtable Curriculum Content
+**Date**: 2024  
+**Components Added**:
+- Content API endpoints (/api/content/*)
+- Content Pydantic models (CurriculumTopic, ActivityTemplate, etc.)
+- Airtable service with caching
+- JSON content data files (curriculum, activities, examples, characters)
+- Database schema documentation
+- 14 curriculum topics aligned with Ontario expectations
+- 16 hands-on activities with TODO markers
+- 27 Canadian examples from all provinces/territories
+- 8 narrative mode characters
+
 ### Issue #5 - Backend AI Orchestration
 **Date**: 2024  
 **Components Added**:
@@ -603,3 +851,44 @@ class ChatResponse(BaseModel):
 7. **Mobile-First**: Design for mobile, enhance for desktop.
 
 8. **Testing**: Each component should have corresponding test file in `__tests__` directory.
+
+---
+
+## 📊 Content Component Summary
+
+### Component Organization by Type
+
+#### **Data Models** (7 total)
+- **Core Models**: CurriculumTopic, ActivityTemplate, CanadianExample, StoryCharacter
+- **Support Models**: ContentAdaptation, LearningObjective, ContentSearchResult
+- **Enums**: DifficultyLevel, ActivityType, AIMode, BloomLevel, LearningStyle, ProvinceTerritory
+
+#### **API Endpoints** (4 total)
+- **Content Retrieval**: /api/content/curriculum/topics, /api/content/activities
+- **Examples**: /api/content/canadian-examples
+- **Health Check**: /api/content/health
+
+#### **Data Files** (5 total)
+- **Curriculum**: curriculum_data.json (14 topics)
+- **Activities**: activity_templates.json (16 activities)
+- **Examples**: canadian_examples.json (27 examples)
+- **Characters**: story_characters.json (8 characters)
+- **Schema**: airtable_structure.md (6 tables)
+
+#### **Services** (1 total)
+- **AirtableService**: Complete CRUD operations with caching and fallback
+
+### Content Statistics
+- **Total Curriculum Topics**: 14 (7 Light, 7 Sound)
+- **Total Activities**: 16 hands-on experiments
+- **Total Canadian Examples**: 27 from all provinces/territories
+- **Total Story Characters**: 8 Canadian animals
+- **Provincial Coverage**: All 13 provinces and territories represented
+- **Indigenous Perspectives**: Integrated in 100% of topics
+- **French Connections**: Included in all examples
+
+### Integration Points
+- **Backend**: AirtableService integrates with AI Orchestrator for content delivery
+- **Frontend**: Content will be displayed through MessageItem components with TODO highlighting
+- **Caching**: In-memory cache with configurable TTL for performance
+- **Fallback**: Static content ensures operation without Airtable connection
