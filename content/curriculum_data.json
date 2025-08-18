@@ -1,0 +1,176 @@
+{
+  "grade4_science_curriculum": {
+    "light_unit": {
+      "overall_expectations": [
+        "Investigate the characteristics and properties of light",
+        "Demonstrate understanding that light has specific characteristics and properties",
+        "Describe how humans use light and innovations involving light"
+      ],
+      "topics": [
+        {
+          "topic_name": "Light",
+          "subtopic": "Sources of Light",
+          "curriculum_expectation": "2.2 Distinguish between natural and artificial sources of light",
+          "description": "Learn about different sources of light in our world",
+          "key_concepts": ["natural light", "artificial light", "sun", "fire", "light bulbs"],
+          "difficulty_level": "Introductory",
+          "canadian_connection": "Northern Lights (Aurora Borealis) in Yukon and Northwest Territories",
+          "indigenous_perspective": "Traditional Inuit use of oil lamps (qulliq) for light in the Arctic",
+          "estimated_duration": 25
+        },
+        {
+          "topic_name": "Light",
+          "subtopic": "Properties of Light",
+          "curriculum_expectation": "2.3 Investigate the basic properties of light",
+          "description": "Discover how light travels and behaves",
+          "key_concepts": ["straight lines", "speed of light", "brightness", "color"],
+          "difficulty_level": "Intermediate",
+          "canadian_connection": "Lighthouses along Canada's coastlines (Peggy's Cove, Nova Scotia)",
+          "indigenous_perspective": "Mi'kmaq navigation using stars and moonlight",
+          "estimated_duration": 30
+        },
+        {
+          "topic_name": "Light",
+          "subtopic": "Light and Materials",
+          "curriculum_expectation": "2.4 Investigate how different materials interact with light",
+          "description": "Explore transparent, translucent, and opaque materials",
+          "key_concepts": ["transparent", "translucent", "opaque", "absorption", "transmission"],
+          "difficulty_level": "Intermediate",
+          "canadian_connection": "Ice formations in Canadian winters - clear vs frosted ice",
+          "indigenous_perspective": "Traditional snow goggles of the Inuit to protect from snow blindness",
+          "estimated_duration": 30
+        },
+        {
+          "topic_name": "Light",
+          "subtopic": "Reflection",
+          "curriculum_expectation": "2.5 Investigate reflection of light by different surfaces",
+          "description": "Learn how light bounces off surfaces",
+          "key_concepts": ["reflection", "mirrors", "shiny surfaces", "angle of reflection"],
+          "difficulty_level": "Intermediate",
+          "canadian_connection": "Reflections on Canada's many lakes (Lake Louise, Alberta)",
+          "indigenous_perspective": "First Nations use of still water as mirrors",
+          "estimated_duration": 35
+        },
+        {
+          "topic_name": "Light",
+          "subtopic": "Refraction",
+          "curriculum_expectation": "2.6 Investigate the refraction of light through different materials",
+          "description": "See how light bends when passing through materials",
+          "key_concepts": ["refraction", "bending light", "prisms", "rainbows", "lenses"],
+          "difficulty_level": "Advanced",
+          "canadian_connection": "Rainbow at Niagara Falls on sunny days",
+          "indigenous_perspective": "Indigenous stories about rainbows as bridges between worlds",
+          "estimated_duration": 35
+        },
+        {
+          "topic_name": "Light",
+          "subtopic": "Shadows",
+          "curriculum_expectation": "2.7 Investigate shadows and their characteristics",
+          "description": "Explore how shadows are formed and change",
+          "key_concepts": ["shadows", "light blocking", "shadow size", "shadow direction"],
+          "difficulty_level": "Introductory",
+          "canadian_connection": "Long shadows during Canadian winter afternoons",
+          "indigenous_perspective": "Sundials and shadow clocks used by Indigenous peoples",
+          "estimated_duration": 25
+        },
+        {
+          "topic_name": "Light",
+          "subtopic": "Colors and White Light",
+          "curriculum_expectation": "2.8 Investigate white light and the color spectrum",
+          "description": "Discover the colors hidden in white light",
+          "key_concepts": ["white light", "spectrum", "prism", "rainbow colors", "color mixing"],
+          "difficulty_level": "Advanced",
+          "canadian_connection": "Northern Lights displaying various colors in the sky",
+          "indigenous_perspective": "Traditional dyes and pigments from nature used by Indigenous artists",
+          "estimated_duration": 40
+        }
+      ]
+    },
+    "sound_unit": {
+      "overall_expectations": [
+        "Investigate the characteristics and properties of sound",
+        "Demonstrate understanding that sound is produced by vibrations",
+        "Describe how humans and animals use and produce sound"
+      ],
+      "topics": [
+        {
+          "topic_name": "Sound",
+          "subtopic": "Sources of Sound",
+          "curriculum_expectation": "3.2 Identify sources of sound in the environment",
+          "description": "Discover the many sounds around us",
+          "key_concepts": ["sound sources", "natural sounds", "human-made sounds", "animal sounds"],
+          "difficulty_level": "Introductory",
+          "canadian_connection": "Sounds of Canadian wildlife (loons, wolves, geese)",
+          "indigenous_perspective": "Traditional drums and rattles in Indigenous ceremonies",
+          "estimated_duration": 25
+        },
+        {
+          "topic_name": "Sound",
+          "subtopic": "Vibrations and Sound",
+          "curriculum_expectation": "3.3 Investigate that sound is caused by vibrations",
+          "description": "Learn how vibrations create sound",
+          "key_concepts": ["vibrations", "sound waves", "frequency", "sound production"],
+          "difficulty_level": "Intermediate",
+          "canadian_connection": "Vibrations of ice on frozen lakes creating unique sounds",
+          "indigenous_perspective": "Throat singing traditions of Inuit culture",
+          "estimated_duration": 30
+        },
+        {
+          "topic_name": "Sound",
+          "subtopic": "How Sound Travels",
+          "curriculum_expectation": "3.4 Investigate how sound travels through different materials",
+          "description": "Explore sound moving through air, water, and solids",
+          "key_concepts": ["sound travel", "medium", "speed of sound", "sound in different materials"],
+          "difficulty_level": "Intermediate",
+          "canadian_connection": "Whale songs traveling through ocean waters off Canada's coasts",
+          "indigenous_perspective": "Traditional communication across water using sound",
+          "estimated_duration": 35
+        },
+        {
+          "topic_name": "Sound",
+          "subtopic": "Pitch and Volume",
+          "curriculum_expectation": "3.5 Investigate pitch and volume of sounds",
+          "description": "Learn about high/low sounds and loud/quiet sounds",
+          "key_concepts": ["pitch", "frequency", "volume", "amplitude", "loud", "soft"],
+          "difficulty_level": "Intermediate",
+          "canadian_connection": "Different pitches of Canadian bird calls",
+          "indigenous_perspective": "Traditional flutes and their varying pitches",
+          "estimated_duration": 30
+        },
+        {
+          "topic_name": "Sound",
+          "subtopic": "Musical Instruments",
+          "curriculum_expectation": "3.6 Investigate how musical instruments produce sound",
+          "description": "Explore different ways instruments make music",
+          "key_concepts": ["strings", "percussion", "wind instruments", "vibration patterns"],
+          "difficulty_level": "Intermediate",
+          "canadian_connection": "Canadian musical instruments (fiddle in Maritime music)",
+          "indigenous_perspective": "Traditional Indigenous instruments across Canada",
+          "estimated_duration": 35
+        },
+        {
+          "topic_name": "Sound",
+          "subtopic": "Echo and Sound Reflection",
+          "curriculum_expectation": "3.7 Investigate how sound reflects off surfaces",
+          "description": "Discover echoes and sound bouncing",
+          "key_concepts": ["echo", "sound reflection", "reverberation", "sound absorption"],
+          "difficulty_level": "Advanced",
+          "canadian_connection": "Echoes in the Rocky Mountains and Canadian canyons",
+          "indigenous_perspective": "Use of natural acoustics in traditional gathering places",
+          "estimated_duration": 30
+        },
+        {
+          "topic_name": "Sound",
+          "subtopic": "Sound and Communication",
+          "curriculum_expectation": "3.8 Investigate how humans and animals use sound to communicate",
+          "description": "Learn how we use sound to share information",
+          "key_concepts": ["communication", "language", "animal calls", "warning sounds"],
+          "difficulty_level": "Introductory",
+          "canadian_connection": "Canada's two official languages and many Indigenous languages",
+          "indigenous_perspective": "Traditional storytelling and oral history traditions",
+          "estimated_duration": 25
+        }
+      ]
+    }
+  }
+}
