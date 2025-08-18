@@ -1,334 +1,258 @@
-# 🍁 Maple - Ontario Grade 4 AI Tutor
+# 🍁 Maple - Grade 4 AI Tutor (v0)
 
-> An intelligent, adaptive tutoring system that enhances young minds through discovery-based learning, storytelling, and real-time Canadian content.
+> A minimal viable AI tutor for Ontario Grade 4 students using Python FastAPI + Airtable. Focus: **Ship fast, validate with real students, iterate.**
 
-[![MIT License](https://img.shields.io/badge/License-MIT-green.svg)](https://choosealicense.com/licenses/mit/)
+[![Python](https://img.shields.io/badge/Backend-Python%20FastAPI-blue.svg)](https://fastapi.tiangolo.com/)
+[![React](https://img.shields.io/badge/Frontend-React-blue.svg)](https://reactjs.org/)
+[![Airtable](https://img.shields.io/badge/Content-Airtable-yellow.svg)](https://airtable.com/)
 [![Grade Level](https://img.shields.io/badge/Grade-4-blue.svg)](https://www.ontario.ca/curriculum)
-[![Status](https://img.shields.io/badge/Status-In%20Development-yellow.svg)](https://github.com/stewmckendry/ai_tutor/issues)
 
-## 🎯 Vision
+## 🎯 **v0 Vision: Validate Educational AI**
 
-**Transform how Grade 4 students learn** by creating an AI tutor that doesn't just provide answers, but cultivates intellectual curiosity, critical thinking, and a love of learning through Canadian-contextualized education.
+**Goal**: Build the simplest possible AI tutor that can intelligently help Grade 4 students learn about **Light & Sound** using Canadian examples. Test with real students to validate the approach.
 
-### The Problem We're Solving
-- **Brain Rot**: Traditional AI tools create passive learners who copy-paste without understanding
-- **Disengagement**: Generic educational content doesn't connect with Canadian students' daily lives
-- **One-Size-Fits-All**: Current tutoring systems don't adapt to individual learning styles
-- **Lost Curiosity**: Direct answers kill the joy of discovery and exploration
+### **What v0 Proves**
+- ✅ Students engage with AI-guided discovery learning
+- ✅ Dual AI orchestration (Claude + OpenAI) improves outcomes  
+- ✅ Canadian curriculum content enhances relevance
+- ✅ TODO activities drive hands-on learning
 
-### Our Solution
-An AI tutor that:
-- **Guides discovery** through Socratic questioning rather than giving answers
-- **Tells stories** that make abstract concepts memorable and engaging
-- **Uses real Canadian data** to make learning relevant (today's weather, hockey scores, local news)
-- **Adapts intelligently** between exploration mode (Claude) and explanation mode (OpenAI)
+### **What v0 Doesn't Include (Yet)**
+- ❌ User accounts or authentication
+- ❌ Complex analytics or dashboards
+- ❌ Multiple subjects beyond Science & Technology
+- ❌ Advanced features (voice, AR, gamification)
 
-## 👥 User Experience
+## 👥 **Meet Emma - Our Test User**
 
-### Meet Emma - Our Primary User
-Emma is a 9-year-old Grade 4 student in Toronto. She's curious but sometimes struggles with abstract concepts. She loves hockey, reads at grade level, and uses an iPad for homework.
+Emma is 9 years old, in Grade 4 in Toronto. She's learning about light and sound in science class.
 
-### Emma's Learning Journey
-
-#### 1. First Contact
+**Emma's v0 Journey:**
 ```
-Emma: "Hi! I need help with light and sound for science"
-Maple: "Hi Emma! I'm Maple 🍁, your learning buddy! Light and sound are everywhere around us. 
-        Can you find 3 things in your room right now that make light?"
-Emma: "My lamp, my iPad, and... the window?"
-Maple: "Great observation! Now here's something interesting - which one of those MAKES light, 
-        and which one just LETS light through? 🤔"
-```
+Emma: "I need help with light and sound"
 
-#### 2. Discovery Through Questions
-- Maple never says "The answer is..."
-- Instead: "What do you think would happen if...?"
-- Celebrates thinking: "I love how you're thinking about this!"
-- Provides hints: "Remember when we talked about how sound travels?"
+Maple: "Hi Emma! I'm Maple 🍁, your science buddy from Canada! 
+Let's be light detectives. Can you find 3 things in your room that make light?"
 
-#### 3. Story-Enhanced Learning
-```
-Maple: "Let me tell you about Alex, a young hockey player in Winnipeg who discovered something 
-        amazing about sound at the rink. One day, Alex noticed the puck made different sounds 
-        on different parts of the ice..."
+Emma: "My lamp, my iPad, and the window"
+
+Maple: "Great detective work! Now here's a puzzle - do you think 
+your iPad MAKES light or just shows light from somewhere else?
+
+TODO(student): Turn your iPad off and on. Does it glow in the dark?"
+
+Emma: "It glows! So it makes its own light!"
+
+Maple: "Exactly! Your iPad has tiny LEDs that change electrical energy 
+into light energy. Just like the CN Tower lights in Toronto! 🏙️"
 ```
 
-#### 4. Real-World Connections
+## 🏗️ **v0 Technical Architecture** 
+
+### **Simple Stack (8 Dependencies)**
 ```
-Maple: "Speaking of temperature and sound, did you know it's -15°C in Edmonton today and +2°C 
-        in Vancouver? Sound actually travels differently in cold air! Want to explore why?"
-```
-
-### Parent Experience
-- Daily summary emails of learning progress
-- Insights into child's interests and struggles
-- Curriculum alignment reports
-- No account required (MVP)
-
-### Teacher Integration (Future)
-- Classroom assignment alignment
-- Progress tracking across students
-- Curriculum coverage reports
-- Export for report cards
-
-## ✨ Core Features
-
-### 🧠 Phase 1: Intelligent Tutoring Core
-- **Dual AI System**: Claude for discovery, OpenAI for explanations
-- **Curriculum Alignment**: Ontario Grade 4 Science, Math, Language Arts
-- **Adaptive Responses**: Adjusts complexity based on student performance
-- **TODO Markers**: Interactive checkpoints for student work
-- **Canadian Context**: Metric units, Canadian examples, local references
-
-### 🎭 Phase 2: Storytelling Enhancement
-- **Narrative Learning**: Curriculum concepts through Canadian adventure stories
-- **Character Library**: Diverse Canadian characters as learning companions
-- **Interactive Stories**: Students help characters solve curriculum-aligned problems
-- **Story Continuity**: Multi-session narratives that build on previous learning
-- **Reflection Prompts**: "What did Alex learn?" connects story to concept
-
-### 🍁 Phase 3: Dynamic Canadian Content
-- **Real-Time Data Integration**: Weather, sports, news for daily problems
-- **n8n Workflows**: Automated content generation pipeline
-- **Fresh Daily Content**: 100+ new problems generated automatically
-- **Cultural Events**: Tied to Canadian holidays, events, seasons
-- **Local Relevance**: Uses student's province/city for examples
-
-## 🏗️ Technical Architecture
-
-### System Overview
-```mermaid
-graph TD
-    A[React Frontend] -->|WebSocket| B[Express Backend]
-    B --> C{AI Orchestrator}
-    C -->|Discovery Mode| D[Claude API]
-    C -->|Explanation Mode| E[OpenAI API]
-    C -->|Story Mode| D
-    B --> F[RAG System]
-    F --> G[(Vector DB)]
-    F --> H[(Curriculum DB)]
-    B --> I[n8n Workflows]
-    I --> J[Canadian APIs]
-    J --> K[Weather Canada]
-    J --> L[Statistics Canada]
-    J --> M[NHL API]
+┌─────────────────┐    HTTPS     ┌──────────────────┐    API      ┌─────────────────┐
+│   React Chat    │─────────────▶│ Python FastAPI   │────────────▶│ Claude/OpenAI   │
+│   (Vercel)      │              │   (Railway)      │             │    APIs         │
+└─────────────────┘              └──────────────────┘             └─────────────────┘
+         │                                 │
+         │ localStorage                    │ Curriculum API
+         ▼                                 ▼
+┌─────────────────┐              ┌──────────────────┐
+│   Session Data  │              │    Airtable      │
+│   (Browser)     │              │   (Curriculum)   │
+└─────────────────┘              └──────────────────┘
 ```
 
-### Technology Stack
+### **Core Components**
 
-#### Frontend
-- **Framework**: React 18 with TypeScript
-- **Styling**: Tailwind CSS
-- **State Management**: React Context + hooks
-- **Real-time**: WebSocket for chat
-- **Storage**: localStorage for sessions
+#### **Frontend (React)**
+- Single chat page with TODO highlighting
+- Session persistence in localStorage 
+- Mobile responsive design
+- Canadian maple leaf branding
 
-#### Backend
-- **Runtime**: Node.js with Express
-- **Language**: TypeScript
-- **APIs**: RESTful + WebSocket
-- **Session**: Redis
-- **Rate Limiting**: express-rate-limit
+#### **Backend (Python FastAPI)** 
+- `POST /api/chat/message` - Main chat endpoint
+- AI orchestration: Claude (learning) vs OpenAI (explanatory)
+- Airtable integration for curriculum content
+- Simple in-memory session management
 
-#### AI Integration
-- **Claude**: Learning mode, storytelling, Socratic method
-- **OpenAI**: Study mode, detailed explanations, complex topics
-- **Orchestration**: Context-aware mode selection
-- **Safety**: Content filtering, age-appropriate responses
+#### **Content (Airtable)**
+- Ontario Grade 4 Science & Technology curriculum
+- Canadian examples (CN Tower, Northern Lights, hockey arenas)
+- Activity templates with TODO markers
+- Story characters for narrative mode
 
-#### Data Layer
-- **Vector DB**: Pinecone/Weaviate for curriculum content
-- **PostgreSQL**: Session data, analytics
-- **Redis**: Caching, rate limiting
-- **n8n**: Workflow automation
+## 🚀 **Quick Start**
 
-### Deployment Architecture
-```
-Production:
-├── Frontend: Vercel/Netlify
-├── Backend: Railway/Render
-├── Database: Supabase/Neon
-├── Vector DB: Pinecone Cloud
-├── Workflows: n8n Cloud
-└── Monitoring: Sentry
-```
-
-## 📊 Success Criteria
-
-### 🎯 Educational Success
-- [ ] Students generate 3+ original questions per session
-- [ ] 70% prefer story mode over direct instruction
-- [ ] Concepts retained 40% better with narrative context
-- [ ] Reading level appropriate for 95% of Grade 4 students
-
-### 💻 Technical Success
-- [ ] Response time < 2 seconds for 95% of interactions
-- [ ] 99.9% uptime during school hours (8am-8pm EST)
-- [ ] Mobile responsive score > 95/100
-- [ ] Accessibility WCAG 2.1 AA compliant
-
-### 📈 Engagement Success
-- [ ] Average session duration > 15 minutes
-- [ ] Return rate > 60% within 7 days
-- [ ] TODO completion rate > 70%
-- [ ] Parent satisfaction > 4.5/5 stars
-
-### 🍁 Canadian Impact
-- [ ] 80% of examples use Canadian context
-- [ ] Real-time data used in 50% of problems
-- [ ] Covers 100% of Ontario Grade 4 curriculum expectations
-- [ ] Positive cultural identity reinforcement
-
-## 🚀 Getting Started
-
-### Prerequisites
+### **Prerequisites**
 ```bash
-# Required
+Python 3.11+
 Node.js 18+
-npm or yarn
-Git
-
-# API Keys needed
-CLAUDE_API_KEY
-OPENAI_API_KEY
-PINECONE_API_KEY (or other vector DB)
+API Keys: Claude, OpenAI, Airtable
 ```
 
-### Local Development
+### **Backend Setup**
 ```bash
-# Clone the repository
-git clone https://github.com/stewmckendry/ai_tutor.git
-cd ai_tutor
+cd backend/
+
+# Create virtual environment
+python3 -m venv venv
+source venv/bin/activate  # Windows: venv\Scripts\activate
+
+# Install minimal dependencies
+pip install -r requirements.txt
+
+# Configure environment
+cp .env.example .env
+# Add your API keys to .env
+
+# Run development server
+uvicorn app.main:app --reload
+
+# API available at http://localhost:8000
+# Docs at http://localhost:8000/docs
+```
+
+### **Frontend Setup** 
+```bash
+cd frontend/
 
 # Install dependencies
 npm install
 
-# Set up environment variables
-cp .env.example .env
-# Edit .env with your API keys
+# Configure API endpoint
+echo "REACT_APP_API_URL=http://localhost:8000" > .env
 
-# Start development servers
-npm run dev
+# Run development server
+npm start
 
-# Frontend: http://localhost:3000
-# Backend: http://localhost:3001
+# App available at http://localhost:3000
 ```
 
-### Using Git Worktrees (Parallel Development)
-```bash
-# Set up worktrees for parallel work
-git worktree add -b issue-1a-frontend ../ai_tutor_worktrees/frontend
-git worktree add -b issue-1b-backend ../ai_tutor_worktrees/backend
-git worktree add -b issue-1c-content ../ai_tutor_worktrees/content
-git worktree add -b issue-1d-integration ../ai_tutor_worktrees/integration
+## 📚 **Current Content (Light & Sound Unit)**
 
-# Work in specific worktree
-cd ../ai_tutor_worktrees/frontend
-npm install
-npm run dev
+### **Curriculum Covered**
+- **Ontario Expectation 2.1**: Assess uses of light and sound in society and the environment
+- **Ontario Expectation 2.2**: Investigate characteristics and properties of light and sound
+- **Ontario Expectation 2.3**: Demonstrate understanding of light and sound concepts
+
+### **Canadian Examples**
+- **Light**: CN Tower LEDs, Northern Lights, lighthouse technology
+- **Sound**: Hockey arena acoustics, Thunder Bay weather warnings
+- **Activities**: Shadow tracking, echo experiments, light source investigation
+
+### **TODO Activities**
+```
+TODO(student): Find 5 light sources in your home and sort them into 
+"natural" and "artificial" categories.
+
+TODO(student): Stand outside and trace your shadow with chalk. 
+Check again in 2 hours - what changed?
+
+TODO(student): Clap your hands in a big room, then in a closet. 
+Which echo is louder?
 ```
 
-## 📚 Documentation
+## 🎯 **v0 Development Plan**
 
-- [Claude Code Guide](./CLAUDE.md) - Implementation guide for Claude Code sessions
-- [API Documentation](./docs/api.md) - Backend API reference
-- [Component Library](./docs/components.md) - Frontend component documentation
-- [Curriculum Alignment](./docs/curriculum.md) - Ontario curriculum mapping
-- [AI Orchestration](./docs/ai-orchestration.md) - AI mode selection logic
-- [Safety Guidelines](./docs/safety.md) - Content moderation and child safety
+### **Week 1: Core Infrastructure**
+- [ ] **Issue #4**: React chat interface (2-3 days)
+- [ ] **Issue #5**: Python FastAPI backend (3-4 days) 
+- [ ] **Issue #6**: Airtable curriculum content (2-3 days)
 
-## 🗺️ Roadmap
+### **Week 2: Integration & Testing**
+- [ ] **Issue #7**: Integration & deployment (2-3 days)
+- [ ] **Student Testing**: 5-8 Grade 4 students (2 days)
+- [ ] **Iteration**: Fix issues, deploy to production
 
-### ✅ Phase 0: Setup (Complete)
-- [x] Repository creation
-- [x] Issue tracking setup
-- [x] Development environment
-- [x] Documentation framework
+### **Success Criteria**
+- [ ] 5+ Grade 4 students complete 15-minute learning sessions
+- [ ] 80%+ say "Maple helped me learn"
+- [ ] 70%+ try the TODO activities
+- [ ] System handles 10 concurrent conversations
+- [ ] Response time < 3 seconds average
 
-### 🚧 Phase 1: Core MVP (In Progress - Weeks 1-2)
-- [ ] Basic chat interface
-- [ ] AI orchestration (Claude + OpenAI)
-- [ ] Light & Sound curriculum content
-- [ ] Session persistence
-- [ ] Mobile responsive design
-- [ ] Basic safety filters
+## 📊 **What Happens After v0**
 
-### 📅 Phase 2: Storytelling (Week 3)
-- [ ] Story mode implementation
-- [ ] Canadian character library
-- [ ] Narrative templates
-- [ ] Story progress tracking
-- [ ] Parent summaries
+### **If v0 Succeeds**
+- 🚀 **Build v1**: Add storytelling mode, more subjects
+- 📈 **Scale**: Multi-grade, teacher dashboard, analytics
+- 🍁 **Enhance**: Dynamic Canadian content, voice interaction
 
-### 📅 Phase 3: Dynamic Content (Weeks 4-5)
-- [ ] n8n workflow setup
-- [ ] Canadian API integrations
-- [ ] Daily content generation
-- [ ] A/B testing framework
-- [ ] Content quality scoring
+### **If v0 Needs Iteration**
+- 🔄 **Fix core issues** identified by student testing
+- 🎯 **Simplify further** if students find it confusing
+- 📚 **Adjust content** based on curriculum feedback
 
-### 🔮 Future Enhancements
-- [ ] User accounts and authentication
-- [ ] Teacher dashboard
-- [ ] Progress analytics
-- [ ] More curriculum subjects
-- [ ] French language support
-- [ ] Indigenous perspectives integration
-- [ ] Gamification elements
-- [ ] Voice interaction
-- [ ] AR/VR experiences
+## 🧪 **Testing with Real Students**
 
-## 🤝 Contributing
+### **Our Testing Protocol**
+1. **Recruit**: 5-8 Grade 4 students (diverse backgrounds)
+2. **Session**: 15-20 minutes supervised by parent/teacher
+3. **Observe**: Do they understand? Do they engage with TODOs?
+4. **Feedback**: "Was Maple helpful? Fun? Confusing?"
+5. **Iterate**: Fix issues, improve content, deploy fixes
 
-We welcome contributions! Please see our [Contributing Guide](./CONTRIBUTING.md) for details.
+### **What We're Measuring**
+- **Comprehension**: Do students understand Maple's responses?
+- **Engagement**: Do they ask follow-up questions?
+- **Activity Completion**: Do they try the TODO tasks?
+- **Learning**: Can they explain concepts after the session?
 
-### Development Process
-1. Pick an issue from our [project board](https://github.com/stewmckendry/ai_tutor/issues)
-2. Create a branch for your work
-3. Make your changes with clear commits
-4. Submit a PR with description
-5. Wait for review and feedback
+## 📂 **Repository Structure**
 
-### Code Standards
-- TypeScript for type safety
-- ESLint for code quality
-- Prettier for formatting
-- Jest for testing
-- Conventional commits
+```
+ai_tutor/
+├── backend/                 # Python FastAPI backend
+│   ├── app/
+│   │   ├── main.py         # FastAPI application
+│   │   ├── ai_orchestrator.py  # Claude + OpenAI routing
+│   │   ├── airtable_service.py  # Curriculum content
+│   │   └── models.py       # Request/response models
+│   ├── requirements.txt    # 8 core dependencies
+│   └── .env.example       # API keys template
+├── frontend/               # React chat interface (TBD)
+├── docs/
+│   └── README.md          # v0 technical overview
+├── GITHUB_ISSUES_UPDATED.md  # Issue update summary
+└── README.md              # This file
+```
 
-## 📄 License
+## 🤝 **Contributing to v0**
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+### **Current Focus Areas**
+- **Backend Development**: Python FastAPI implementation
+- **Content Creation**: Airtable curriculum database
+- **Frontend Development**: React chat interface
+- **Student Testing**: Recruiting Grade 4 volunteers
 
-## 🙏 Acknowledgments
+### **GitHub Issues**
+- [**Issue #1**](https://github.com/stewmckendry/ai_tutor/issues/1): Core v0 Implementation
+- [**Issue #4**](https://github.com/stewmckendry/ai_tutor/issues/4): React Chat Interface
+- [**Issue #5**](https://github.com/stewmckendry/ai_tutor/issues/5): Python FastAPI Backend
+- [**Issue #6**](https://github.com/stewmckendry/ai_tutor/issues/6): Airtable Curriculum Content
+- [**Issue #7**](https://github.com/stewmckendry/ai_tutor/issues/7): Integration & Deployment
 
-- **Ontario Ministry of Education** for curriculum documents
-- **Anthropic** for Claude API and educational AI guidance
-- **OpenAI** for GPT API and study mode capabilities
-- **Canadian educators** who provided feedback and insights
-- **Grade 4 students** who will test and improve the system
+## 📞 **Contact & Feedback**
 
-## 📞 Contact
-
-- **Project Lead**: Stew McKendry
-- **GitHub**: [@stewmckendry](https://github.com/stewmckendry)
+- **Project Lead**: Stew McKendry [@stewmckendry](https://github.com/stewmckendry)
 - **Issues**: [GitHub Issues](https://github.com/stewmckendry/ai_tutor/issues)
+- **Student Testing**: Email if you have Grade 4 students who'd like to help test!
 
-## 🏆 Project Status
+## 📄 **License**
 
-🚧 **Active Development** - We're currently building the MVP with target launch in 2 weeks.
-
-Follow our progress:
-- [Epic #1: Core MVP](https://github.com/stewmckendry/ai_tutor/issues/1) - In Progress
-- [Epic #2: Storytelling](https://github.com/stewmckendry/ai_tutor/issues/2) - Planned
-- [Epic #3: Dynamic Content](https://github.com/stewmckendry/ai_tutor/issues/3) - Planned
+MIT License - See [LICENSE](LICENSE) file for details.
 
 ---
 
 <div align="center">
-  
-**Built with ❤️ for Canadian Students**
 
-*Making learning an adventure, one question at a time* 🍁
+**v0 Status: 🚧 Active Development**
+
+*Goal: Real Grade 4 students learning with Maple within 2 weeks* 🍁
+
+**Remember: Ship fast → Test with students → Learn → Iterate**
 
 </div>
