@@ -4,7 +4,7 @@
 
 This inventory catalogs all reusable components in the AI Tutor project. Each component is documented with its purpose, location, and usage patterns to ensure consistency and reusability across the application.
 
-**Last Updated**: Issue #4 - Frontend Chat Interface
+**Last Updated**: Issue #5 - Backend AI Orchestration
 
 ---
 
@@ -332,7 +332,248 @@ text-maple-100  /* Light text on maple background */
 
 ---
 
+## 🚀 Backend Components
+
+### API Endpoints
+
+#### POST /api/chat/message
+**Path**: `backend/app/main.py:50-90`  
+**Purpose**: Process chat messages with AI providers  
+**Request Body**:
+```python
+class ChatRequest(BaseModel):
+    message: str
+    session_id: Optional[str] = None
+    mode: Optional[ConversationMode] = None
+```
+
+**Response**:
+```python
+class ChatResponse(BaseModel):
+    response: str
+    mode: ConversationMode
+    provider: str
+    session_id: str
+    message_id: str
+    metadata: Optional[Dict] = None
+```
+
+**Features**:
+- Automatic mode detection
+- Provider selection and failover
+- Session management
+- Error handling
+
+---
+
+### AI Services
+
+#### ClaudeService
+**Path**: `backend/app/services/claude_service.py`  
+**Purpose**: Anthropic Claude API integration  
+**Methods**:
+- `generate_response(prompt: str, conversation_history: List[Dict])` - Generate AI response
+- `is_available()` - Check service availability
+
+**Configuration**:
+- Model: Claude 3 Sonnet
+- Max tokens: 4096
+- Temperature: 0.7
+
+**Usage**:
+```python
+service = ClaudeService()
+response = await service.generate_response(prompt, history)
+```
+
+#### OpenAIService
+**Path**: `backend/app/services/openai_service.py`  
+**Purpose**: OpenAI GPT-4 API integration  
+**Methods**:
+- `generate_response(prompt: str, conversation_history: List[Dict])` - Generate AI response
+- `is_available()` - Check service availability
+
+**Configuration**:
+- Model: GPT-4 Turbo
+- Max tokens: 4096
+- Temperature: 0.7
+
+---
+
+### Orchestration Components
+
+#### AIOrchestrator
+**Path**: `backend/app/ai_orchestrator.py`  
+**Purpose**: Intelligent provider selection and mode detection  
+**Methods**:
+- `select_mode(message: str, history: List)` - Detect conversation mode
+- `select_provider(message: str, mode: ConversationMode)` - Choose AI provider
+- `generate_response(message: str, mode: ConversationMode, session_id: str)` - Orchestrate response
+
+**Mode Detection Keywords**:
+- **Learning**: "why", "how", "explain", "understand"
+- **Story**: "story", "tell me about", "adventure"
+- **Explanatory**: "stuck", "confused", "help me"
+- **Discovery**: "explore", "discover", "investigate"
+
+**Provider Selection Logic**:
+- Math/technical → OpenAI
+- Learning/Story → Anthropic
+- Default → Anthropic
+
+---
+
+### Data Management
+
+#### SessionManager
+**Path**: `backend/app/session_manager.py`  
+**Purpose**: In-memory session storage  
+**Methods**:
+- `create_session()` - Create new session
+- `get_session(session_id: str)` - Retrieve session
+- `add_message(session_id: str, message: Message)` - Add to history
+- `get_conversation_history(session_id: str)` - Get formatted history
+
+**Data Structure**:
+```python
+Session = {
+    "id": str,
+    "messages": List[Message],
+    "created_at": datetime,
+    "last_activity": datetime
+}
+```
+
+#### AirtableService
+**Path**: `backend/app/services/airtable_service.py`  
+**Purpose**: Curriculum content retrieval  
+**Methods**:
+- `get_content(topic: str)` - Fetch curriculum content
+- `search_activities(grade: int, subject: str)` - Find activities
+- `is_available()` - Check service availability
+
+---
+
+### Configuration Components
+
+#### Config
+**Path**: `backend/app/config.py`  
+**Purpose**: Environment variable management  
+**Settings**:
+```python
+class Settings(BaseSettings):
+    openai_api_key: Optional[str]
+    anthropic_api_key: Optional[str]
+    airtable_api_key: Optional[str]
+    airtable_base_id: Optional[str]
+    airtable_table_name: str = "Content"
+    debug: bool = False
+```
+
+#### Prompts
+**Path**: `backend/app/prompts.py`  
+**Purpose**: Load and manage system prompts from YAML  
+**Functions**:
+- `load_prompts()` - Load from YAML with caching
+- `get_system_prompt(mode: ConversationMode)` - Get mode-specific prompt
+- `get_activity_prompt()` - Get TODO activity prompt
+- `reload_prompts()` - Force reload (debug mode)
+
+**YAML Configuration**:
+**Path**: `backend/app/prompts.yaml`  
+- Base prompt (Maple personality)
+- Four mode configurations
+- Activity prompt template
+
+---
+
+### Model Definitions
+
+#### Pydantic Models
+**Path**: `backend/app/models.py`  
+**Purpose**: Request/response validation  
+
+**Models**:
+```python
+class ConversationMode(Enum):
+    LEARNING = "learning"
+    EXPLANATORY = "explanatory"
+    STORY = "story"
+    DISCOVERY = "discovery"
+
+class Message(BaseModel):
+    role: str
+    content: str
+    timestamp: datetime
+    mode: Optional[ConversationMode]
+
+class ChatRequest(BaseModel):
+    message: str
+    session_id: Optional[str]
+    mode: Optional[ConversationMode]
+
+class ChatResponse(BaseModel):
+    response: str
+    mode: ConversationMode
+    provider: str
+    session_id: str
+    message_id: str
+```
+
+---
+
+## 📊 Backend Impact Assessment
+
+### High-Impact Components (Core Functionality)
+- AIOrchestrator - Central logic for all AI interactions
+- SessionManager - Required for all conversations
+- Config - Environment settings affect entire system
+
+### Medium-Impact Components (Feature-Specific)
+- ClaudeService - Primary AI provider
+- OpenAIService - Fallback/technical provider
+- Prompts system - Behavior customization
+
+### Low-Impact Components (Optional)
+- AirtableService - Curriculum enhancement
+- Activity prompt generation
+
+---
+
+## 🔧 Backend Utilities
+
+### Testing
+**Path**: `backend/tests/test_main.py`  
+**Purpose**: API endpoint testing  
+**Coverage**:
+- Health check endpoint
+- Chat endpoint with mock
+- Session management
+- Error handling
+
+### Development Tools
+**Path**: `backend/test_prompts_yaml.py`  
+**Purpose**: YAML prompt validation  
+**Features**:
+- Load verification
+- Mode enumeration
+- Prompt length checking
+
+---
+
 ## 🔄 Version History
+
+### Issue #5 - Backend AI Orchestration
+**Date**: 2024  
+**Components Added**:
+- AI service integrations (Claude, OpenAI)
+- AI Orchestrator with mode detection
+- Session management system
+- Prompt configuration (YAML-based)
+- Airtable service integration
+- API endpoints (chat, health, session)
+- Pydantic models
+- Configuration management
 
 ### Issue #4 - Frontend Chat Interface
 **Date**: 2024  
