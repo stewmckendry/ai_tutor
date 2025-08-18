@@ -1,0 +1,268 @@
+{
+  "canadian_examples": {
+    "light_examples": [
+      {
+        "example_title": "Northern Lights in Yellowknife",
+        "curriculum_topic": "Light - Natural Light Sources",
+        "province_territory": "Northwest Territories",
+        "description": "The Aurora Borealis dances across the northern sky in Yellowknife over 240 nights a year. These green, blue, and sometimes red lights happen when particles from the sun hit Earth's atmosphere.",
+        "indigenous_connection": "The Dene people call the Northern Lights 'yakyò' and have stories about them being the spirits of ancestors dancing in the sky.",
+        "french_connection": "Les aurores boréales - French explorers were amazed by these lights when they first came to Canada.",
+        "visual_description": "Bright green curtains of light waving across a dark sky above snow-covered pine trees",
+        "fun_fact": "Yellowknife is called the 'Aurora Capital of North America' because you can see the Northern Lights so often there!"
+      },
+      {
+        "example_title": "Peggy's Cove Lighthouse",
+        "curriculum_topic": "Light - Artificial Light Sources",
+        "province_territory": "Nova Scotia",
+        "description": "This famous lighthouse has been guiding ships safely along Nova Scotia's rocky coast since 1915. Its bright light can be seen from 40 kilometers away on a clear night!",
+        "indigenous_connection": "Before lighthouses, Mi'kmaq peoples used fires on shorelines to guide their canoes at night.",
+        "french_connection": "Les phares - Acadian communities along the coast have depended on lighthouses for centuries.",
+        "visual_description": "White lighthouse with red top standing on gray granite rocks with ocean waves crashing",
+        "fun_fact": "The lighthouse still uses its original lens system that makes the light look much brighter than it really is!"
+      },
+      {
+        "example_title": "Rainbow at Niagara Falls",
+        "curriculum_topic": "Light - Refraction",
+        "province_territory": "Ontario",
+        "description": "On sunny days, the mist from Niagara Falls creates perfect rainbows. The water droplets in the air act like tiny prisms, splitting white sunlight into all its colors.",
+        "indigenous_connection": "The Haudenosaunee people believed rainbows were bridges between the physical and spirit worlds.",
+        "french_connection": "Arc-en-ciel aux chutes - French explorers first documented these rainbows in the 1600s.",
+        "visual_description": "Massive waterfall with bright rainbow arcing through the mist",
+        "fun_fact": "You can sometimes see a double rainbow at the Falls - the second one has its colors in reverse order!"
+      },
+      {
+        "example_title": "Ice Crystals in Nunavut",
+        "curriculum_topic": "Light - Reflection and Refraction",
+        "province_territory": "Nunavut",
+        "description": "In the Arctic winter, ice crystals in the air create 'sun dogs' - bright spots of light on either side of the sun. This happens when sunlight bends through the six-sided ice crystals.",
+        "indigenous_connection": "Inuit elders use sun dogs to predict weather changes - they often mean a storm is coming.",
+        "french_connection": "Parhélie - French term for sun dogs, meaning 'beside the sun'.",
+        "visual_description": "Bright sun with two smaller bright spots on each side, surrounded by ice crystals sparkling in the air",
+        "fun_fact": "Sometimes you can see a complete ring of light around the sun called a '22-degree halo'!"
+      },
+      {
+        "example_title": "Sunrise over the Atlantic",
+        "curriculum_topic": "Light - Natural Light Sources",
+        "province_territory": "Newfoundland and Labrador",
+        "description": "Cape Spear is the easternmost point in North America, so it sees the sunrise before anywhere else on the continent. The sun's light takes about 8 minutes to travel from the sun to Earth!",
+        "indigenous_connection": "The Beothuk people used the sunrise to navigate and time their fishing activities.",
+        "french_connection": "Lever du soleil - French fishermen have watched these sunrises for over 500 years.",
+        "visual_description": "Orange and pink sunrise over dark ocean water with rocky cliffs in foreground",
+        "fun_fact": "On New Year's Day, people gather at Cape Spear to see the first sunrise of the year in North America!"
+      },
+      {
+        "example_title": "Hoarfrost in Saskatchewan",
+        "curriculum_topic": "Light - Light and Materials",
+        "province_territory": "Saskatchewan",
+        "description": "When water vapor freezes directly onto cold surfaces, it creates hoarfrost - tiny ice crystals that sparkle like diamonds in the sunlight. Each crystal reflects light differently.",
+        "indigenous_connection": "Plains Cree stories tell of the 'Winter Maker' who paints the world white with frost.",
+        "french_connection": "Givre - Métis communities have many traditional stories about frost patterns.",
+        "visual_description": "Tree branches completely covered in white frost crystals sparkling in bright winter sunlight",
+        "fun_fact": "Hoarfrost crystals can grow up to 10 centimeters long in perfect conditions!"
+      },
+      {
+        "example_title": "Bioluminescence in PEI Waters",
+        "curriculum_topic": "Light - Natural Light Sources",
+        "province_territory": "Prince Edward Island",
+        "description": "In summer, tiny organisms called dinoflagellates make the ocean water glow blue-green when disturbed. This living light is called bioluminescence!",
+        "indigenous_connection": "Mi'kmaq legends speak of 'star water' - water that carries fallen stars.",
+        "french_connection": "Eau lumineuse - Acadian fishers have long known about these glowing waters.",
+        "visual_description": "Dark ocean water with bright blue-green glowing waves where the water moves",
+        "fun_fact": "The same chemical reaction that makes fireflies glow happens in these tiny ocean organisms!"
+      },
+      {
+        "example_title": "Diamond Dust in Winnipeg",
+        "curriculum_topic": "Light - Reflection",
+        "province_territory": "Manitoba",
+        "description": "On very cold days (below -30°C), tiny ice crystals called 'diamond dust' float in the air and sparkle in the sunlight. Each crystal acts like a tiny mirror!",
+        "indigenous_connection": "Ojibwe teachings describe this as the 'breath of winter' becoming visible.",
+        "french_connection": "Poussière de diamant - Franco-Manitobans have a saying about 'winter's jewelry'.",
+        "visual_description": "Clear blue sky filled with millions of tiny sparkling ice crystals floating in the air",
+        "fun_fact": "Diamond dust only happens when it's extremely cold and the air is very still!"
+      },
+      {
+        "example_title": "Sunset through Prairie Wheat",
+        "curriculum_topic": "Light - Properties of Light",
+        "province_territory": "Alberta",
+        "description": "When the sun sets over Alberta's wheat fields, the golden grain seems to glow. This happens because wheat stalks are partially translucent and scatter the sunlight.",
+        "indigenous_connection": "Blackfoot peoples tracked seasons by watching how sunlight changed across the prairies.",
+        "french_connection": "Coucher de soleil doré - French settlers were amazed by the vast golden prairies.",
+        "visual_description": "Golden wheat field with orange sunset sky and sun just touching the horizon",
+        "fun_fact": "Alberta has over 16 hours of daylight in summer - that's a lot of photosynthesis for the wheat!"
+      },
+      {
+        "example_title": "Glacier Ice Blue in the Rockies",
+        "curriculum_topic": "Light - Light and Materials",
+        "province_territory": "British Columbia",
+        "description": "Glaciers in the Rocky Mountains look blue because ice absorbs red light but reflects blue light. The thicker the ice, the bluer it appears!",
+        "indigenous_connection": "The Ktunaxa people have stories about the blue ice being frozen sky.",
+        "french_connection": "Glace bleue - French mountain guides first documented this phenomenon in the Canadian Rockies.",
+        "visual_description": "Massive blue-tinted glacier flowing between mountain peaks with bright snow on top",
+        "fun_fact": "Some glacier ice in BC is over 100,000 years old - imagine the history frozen in that ice!"
+      },
+      {
+        "example_title": "Midnight Sun in Yukon",
+        "curriculum_topic": "Light - Natural Light Sources",
+        "province_territory": "Yukon",
+        "description": "In summer, the sun doesn't set for weeks in northern Yukon. On June 21st in Old Crow, the sun is visible for 24 hours straight!",
+        "indigenous_connection": "The Vuntut Gwitchin plan their summer activities around the continuous daylight.",
+        "french_connection": "Soleil de minuit - French explorers had trouble sleeping in the constant light.",
+        "visual_description": "Sun sitting just above the horizon at midnight with orange and pink sky",
+        "fun_fact": "Some Yukon communities have midnight sun baseball games that start at 10 PM!"
+      },
+      {
+        "example_title": "Fog and Lights in St. John's",
+        "curriculum_topic": "Light - Light and Materials",
+        "province_territory": "Newfoundland and Labrador",
+        "description": "St. John's is the foggiest city in Canada. Fog is made of tiny water droplets that scatter light, making it hard to see. That's why foghorns use sound instead of light!",
+        "indigenous_connection": "Beothuk peoples navigated in fog using sound echoes off cliffs.",
+        "french_connection": "Brouillard - French fishermen developed special techniques for fishing in fog.",
+        "visual_description": "Thick white fog with dim streetlight creating a glowing orb of light",
+        "fun_fact": "St. John's has fog on average 124 days per year - that's one-third of the year!"
+      },
+      {
+        "example_title": "Shadows on the Prairies",
+        "curriculum_topic": "Light - Shadows",
+        "province_territory": "Saskatchewan",
+        "description": "On the flat prairies, you can see your shadow stretch incredibly long during sunrise and sunset. The low angle of the sun creates these giant shadows!",
+        "indigenous_connection": "Plains peoples used shadow length to tell time and seasons.",
+        "french_connection": "Ombres longues - Métis buffalo hunters used shadows to track time during hunts.",
+        "visual_description": "Person standing on flat prairie with extremely long shadow stretching behind them",
+        "fun_fact": "Your shadow at sunset on the prairies can be over 20 meters long!"
+      }
+    ],
+    "sound_examples": [
+      {
+        "example_title": "Loon Calls on Ontario Lakes",
+        "curriculum_topic": "Sound - Natural Sounds",
+        "province_territory": "Ontario",
+        "description": "The haunting call of the common loon echoes across Ontario's lakes. Loons have four different calls, each with a different meaning - like a sound language!",
+        "indigenous_connection": "In Ojibwe stories, the loon's call is a message between the earth and spirit worlds.",
+        "french_connection": "Le huard - The loon appears on the Canadian dollar coin, called a 'loonie'.",
+        "visual_description": "Black and white spotted loon floating on calm lake water with forest in background",
+        "fun_fact": "A loon's call can be heard up to 3 kilometers away across water!"
+      },
+      {
+        "example_title": "Ice Singing on Lake Winnipeg",
+        "curriculum_topic": "Sound - Vibrations",
+        "province_territory": "Manitoba",
+        "description": "When Lake Winnipeg freezes, the ice makes incredible singing and booming sounds as it expands and contracts. These sounds are caused by vibrations traveling through the ice.",
+        "indigenous_connection": "Cree peoples say the lake is talking when the ice sings.",
+        "french_connection": "Chant de glace - French voyageurs were often frightened by these mysterious sounds.",
+        "visual_description": "Vast frozen lake surface with cracks and pressure ridges in the ice",
+        "fun_fact": "Ice on Lake Winnipeg can be over 1 meter thick and the sounds can be heard from shore!"
+      },
+      {
+        "example_title": "Thunderous Niagara Falls",
+        "curriculum_topic": "Sound - Volume",
+        "province_territory": "Ontario",
+        "description": "The roar of Niagara Falls can be heard from 15 kilometers away! The sound is created by millions of liters of water crashing down every second.",
+        "indigenous_connection": "The word 'Niagara' comes from the Haudenosaunee word 'Onguiaahra' meaning 'the strait'.",
+        "french_connection": "Tonnerre d'eau - French explorer Father Louis Hennepin first described the thunderous sound in 1678.",
+        "visual_description": "Massive waterfall with mist rising and water crashing into rocks below",
+        "fun_fact": "The Falls are so loud (about 95 decibels) that people living nearby often don't notice the sound anymore!"
+      },
+      {
+        "example_title": "Howling Wolves in Algonquin",
+        "curriculum_topic": "Sound - Communication",
+        "province_territory": "Ontario",
+        "description": "Wolf packs in Algonquin Park howl to communicate with each other across distances up to 10 kilometers. Each wolf has a unique howl, like a voice signature!",
+        "indigenous_connection": "Anishinaabe peoples learned to communicate across distances by mimicking wolf howls.",
+        "french_connection": "Hurlement des loups - Coureurs de bois used wolf howls to signal each other.",
+        "visual_description": "Grey wolves with heads tilted back howling in a snowy forest",
+        "fun_fact": "Algonquin Park offers 'wolf howling' events where people can hear wild wolves respond to human howls!"
+      },
+      {
+        "example_title": "Icebergs Cracking in Newfoundland",
+        "curriculum_topic": "Sound - Vibrations",
+        "province_territory": "Newfoundland and Labrador",
+        "description": "When icebergs break apart off Newfoundland's coast, they make loud cracking and popping sounds. These sounds are caused by 10,000-year-old compressed air escaping!",
+        "indigenous_connection": "Inuit peoples could predict iceberg movements by listening to the sounds they make.",
+        "french_connection": "Craquement de glace - French fishermen use these sounds to avoid dangerous icebergs.",
+        "visual_description": "Large white and blue iceberg with a piece breaking off into the ocean",
+        "fun_fact": "The fizzing sound you hear is called 'Bergie Seltzer' - like the iceberg is a giant fizzy drink!"
+      },
+      {
+        "example_title": "Drumming at Powwows",
+        "curriculum_topic": "Sound - Musical Instruments",
+        "province_territory": "All Provinces",
+        "description": "The big drum at powwows can be heard from kilometers away. The drum's vibrations are so strong you can feel them in your chest!",
+        "indigenous_connection": "The drum is called the heartbeat of Mother Earth in many Indigenous cultures.",
+        "french_connection": "Tambour sacré - French settlers were invited to drumming ceremonies as signs of friendship.",
+        "visual_description": "Large traditional drum with several people sitting around it holding drumsticks",
+        "fun_fact": "Some powwow drums are made from moose or buffalo hide and can be over 1 meter wide!"
+      },
+      {
+        "example_title": "Whale Songs in the Bay of Fundy",
+        "curriculum_topic": "Sound - Sound in Water",
+        "province_territory": "New Brunswick",
+        "description": "Humpback whales in the Bay of Fundy sing complex songs that can last 30 minutes. These songs travel hundreds of kilometers underwater!",
+        "indigenous_connection": "Mi'kmaq peoples believed whale songs were messages from the spirit of the ocean.",
+        "french_connection": "Chants de baleines - Acadian fishers use whale sounds to locate fishing grounds.",
+        "visual_description": "Humpback whale breaching with water splashing around it",
+        "fun_fact": "Whale songs change over time - like hit songs, new whale songs spread across the ocean!"
+      },
+      {
+        "example_title": "Echoes in Québec's Saguenay Fjord",
+        "curriculum_topic": "Sound - Echo",
+        "province_territory": "Quebec",
+        "description": "The steep walls of Saguenay Fjord create perfect echoes. A shout can bounce back and forth between the walls several times!",
+        "indigenous_connection": "Innu peoples used echoes in the fjord to communicate across the water.",
+        "french_connection": "Écho du fjord - French settlers thought the echoes were spirits answering them.",
+        "visual_description": "Deep fjord with steep rocky cliffs on both sides and dark water below",
+        "fun_fact": "The fjord walls are up to 350 meters high - that's taller than the Eiffel Tower!"
+      },
+      {
+        "example_title": "Fiddle Music in Cape Breton",
+        "curriculum_topic": "Sound - Musical Instruments",
+        "province_territory": "Nova Scotia",
+        "description": "Cape Breton fiddle music combines Scottish, Irish, and Acadian traditions. The fiddle's strings vibrate at different speeds to create different pitches.",
+        "indigenous_connection": "Mi'kmaq fiddlers blend traditional songs with Celtic music styles.",
+        "french_connection": "Violon acadien - Acadian fiddle music has its own unique style and rhythm.",
+        "visual_description": "Musician playing fiddle with bow moving across strings",
+        "fun_fact": "Some Cape Breton fiddlers can make their fiddles sound like they're laughing or crying!"
+      },
+      {
+        "example_title": "Prairie Wind Songs",
+        "curriculum_topic": "Sound - Natural Sounds",
+        "province_territory": "Alberta",
+        "description": "The constant prairie wind creates different sounds as it blows through grasses, around buildings, and over hills. The pitch changes with wind speed!",
+        "indigenous_connection": "Blackfoot peoples read weather patterns in the sounds of prairie wind.",
+        "french_connection": "Vent des prairies - French settlers built windmills to harness the constant wind.",
+        "visual_description": "Tall prairie grass bending and waving in strong wind",
+        "fun_fact": "The prairie wind can blow continuously for days and reach speeds of 100 km/h!"
+      },
+      {
+        "example_title": "Foghorns in Halifax Harbour",
+        "curriculum_topic": "Sound - Human-made Sounds",
+        "province_territory": "Nova Scotia",
+        "description": "Halifax harbour foghorns use low-frequency sounds because low sounds travel farther in fog than high sounds. Each lighthouse has its own pattern!",
+        "indigenous_connection": "Before foghorns, Mi'kmaq peoples used drums to guide canoes in fog.",
+        "french_connection": "Corne de brume - French naval traditions influenced Canadian foghorn patterns.",
+        "visual_description": "Large foghorn on lighthouse with thick fog surrounding it",
+        "fun_fact": "The Halifax harbour foghorn can be heard up to 10 kilometers away in thick fog!"
+      },
+      {
+        "example_title": "Chinook Wind Sounds",
+        "curriculum_topic": "Sound - Natural Phenomena",
+        "province_territory": "Alberta",
+        "description": "Chinook winds rushing down the Rocky Mountains create a distinctive whooshing sound. These warm winds can raise temperatures by 20°C in minutes!",
+        "indigenous_connection": "Blackfoot peoples called these winds 'snow eater' because they melt snow so quickly.",
+        "french_connection": "Vent chinook - French settlers were amazed by these sudden warm winds in winter.",
+        "visual_description": "Arch of clouds over mountains with wind blowing down the slopes",
+        "fun_fact": "Chinook winds can reach speeds of 120 km/h and sound like a freight train!"
+      },
+      {
+        "example_title": "Mosquito Buzz in the North",
+        "curriculum_topic": "Sound - Pitch",
+        "province_territory": "Northwest Territories",
+        "description": "Arctic mosquitoes beat their wings 300-600 times per second, creating their annoying high-pitched buzz. Female mosquitoes buzz at a different pitch than males!",
+        "indigenous_connection": "Dene peoples time outdoor activities to avoid peak mosquito hours.",
+        "french_connection": "Bourdonnement - French fur traders wore special netting to escape the mosquito clouds.",
+        "visual_description": "Cloud of mosquitoes hovering over tundra landscape",
+        "fun_fact": "A swarm of Arctic mosquitoes can sound like a small airplane engine!"
+      }
+    ]
+  }
+}

@@ -1,0 +1,92 @@
+{
+  "story_characters": [
+    {
+      "character_name": "Maple",
+      "character_type": "Main Guide",
+      "personality_traits": ["curious", "helpful", "brave", "friendly", "optimistic"],
+      "backstory": "Maple is a young beaver who lives in Algonquin Park, Ontario. She loves building dams and is fascinated by how light reflects off water and how sound travels through it. Her family has lived in the park for generations, and she knows all the best spots for science discoveries!",
+      "catchphrase": "Let's explore, eh!",
+      "home_province": "Ontario",
+      "special_ability": "Can sense vibrations through water and wood",
+      "curriculum_connection": ["Sound", "Vibrations", "Water", "Reflection"],
+      "visual_description": "A friendly brown beaver with bright eyes, a flat tail with a maple leaf pattern, wearing a tiny red backpack full of science tools"
+    },
+    {
+      "character_name": "Aurora",
+      "character_type": "Sky Expert",
+      "personality_traits": ["wise", "dreamy", "artistic", "patient", "observant"],
+      "backstory": "Aurora is a snowy owl from Nunavut who migrates across Canada. She has seen the Northern Lights countless times and understands how light works in the sky. She speaks English, French, and Inuktitut.",
+      "catchphrase": "Look up and wonder!",
+      "home_province": "Nunavut",
+      "special_ability": "Can see in almost complete darkness",
+      "curriculum_connection": ["Light", "Natural Light Sources", "Colors", "Properties of Light"],
+      "visual_description": "A magnificent white snowy owl with golden eyes, wearing a colourful beaded necklace made by Inuit friends"
+    },
+    {
+      "character_name": "Echo",
+      "character_type": "Sound Specialist",
+      "personality_traits": ["playful", "energetic", "musical", "social", "clever"],
+      "backstory": "Echo is a beluga whale from the St. Lawrence River in Québec. She loves making different sounds and songs underwater. She can speak both English and French, often mixing both languages when excited!",
+      "catchphrase": "Allons-y, let's make some noise!",
+      "home_province": "Quebec",
+      "special_ability": "Can echolocate and create many different sounds",
+      "curriculum_connection": ["Sound", "Echo", "Vibrations", "Sound in Water", "Communication"],
+      "visual_description": "A small white beluga whale with a round, friendly face, often shown blowing bubbles that contain musical notes"
+    },
+    {
+      "character_name": "Rocky",
+      "character_type": "Mountain Guide",
+      "personality_traits": ["adventurous", "strong", "protective", "knowledgeable", "encouraging"],
+      "backstory": "Rocky is a mountain goat from the Canadian Rockies in Alberta. He loves climbing to high places where he can see how light changes throughout the day. He knows all about echoes in the mountains and how weather affects light and sound.",
+      "catchphrase": "Step by step, we'll reach the peak!",
+      "home_province": "Alberta",
+      "special_ability": "Can predict weather by observing light patterns",
+      "curriculum_connection": ["Light", "Shadows", "Echo", "Natural Phenomena"],
+      "visual_description": "A sure-footed mountain goat with curved horns and a white fluffy coat, wearing hiking boots on all four hooves"
+    },
+    {
+      "character_name": "Piper",
+      "character_type": "Music Maker",
+      "personality_traits": ["creative", "joyful", "inclusive", "resourceful", "inspiring"],
+      "backstory": "Piper is a chickadee from Nova Scotia who learned fiddle music from listening to Cape Breton musicians. She loves teaching others how to make music from everyday objects and understand how instruments work.",
+      "catchphrase": "Every sound tells a story!",
+      "home_province": "Nova Scotia",
+      "special_ability": "Can mimic any sound she hears",
+      "curriculum_connection": ["Sound", "Musical Instruments", "Pitch", "Volume", "Vibrations"],
+      "visual_description": "A small black-capped chickadee with a tiny fiddle, wearing a tartan bow tie"
+    },
+    {
+      "character_name": "Spark",
+      "character_type": "Tech Enthusiast",
+      "personality_traits": ["innovative", "excitable", "problem-solver", "enthusiastic", "helpful"],
+      "backstory": "Spark is a firefly from Point Pelee, Ontario (Canada's southernmost point). She's fascinated by both natural and artificial light, and loves comparing her bioluminescence to human-made lights. She often visits cities to see different lighting technologies.",
+      "catchphrase": "Light up your ideas!",
+      "home_province": "Ontario",
+      "special_ability": "Can control the brightness and pattern of her glow",
+      "curriculum_connection": ["Light", "Natural Light", "Artificial Light", "Light Sources"],
+      "visual_description": "A glowing firefly with oversized safety goggles and a tool belt full of tiny gadgets"
+    },
+    {
+      "character_name": "Whisper",
+      "character_type": "Communication Expert",
+      "personality_traits": ["gentle", "good listener", "empathetic", "thoughtful", "multilingual"],
+      "backstory": "Whisper is a wolf pup from Manitoba who is learning the different howls and calls of her pack. She understands how sound carries across the prairies and through forests. She's very interested in how different animals and people communicate.",
+      "catchphrase": "Listen carefully, nature is speaking!",
+      "home_province": "Manitoba",
+      "special_ability": "Can hear sounds from very far away",
+      "curriculum_connection": ["Sound", "Communication", "Sound Travel", "Natural Sounds"],
+      "visual_description": "A young grey wolf with oversized ears, wearing a friendship bracelet made of colourful beads"
+    },
+    {
+      "character_name": "Shimmer",
+      "character_type": "Water & Light Expert",
+      "personality_traits": ["graceful", "calm", "observant", "philosophical", "adaptable"],
+      "backstory": "Shimmer is a lake trout from Lake Superior who has seen how light behaves differently in water. She knows about refraction, reflection on water surfaces, and how the lake looks different in each season.",
+      "catchphrase": "Dive deep to see clearly!",
+      "home_province": "Ontario",
+      "special_ability": "Can see how light bends in water",
+      "curriculum_connection": ["Light", "Refraction", "Reflection", "Transparent Materials"],
+      "visual_description": "A silvery lake trout with iridescent scales that create rainbow patterns, wearing a pair of swimming goggles"
+    }
+  ]
+}
