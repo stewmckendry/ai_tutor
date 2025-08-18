@@ -66,10 +66,9 @@ Create `.env` file in backend directory:
 OPENAI_API_KEY=sk-...
 ANTHROPIC_API_KEY=sk-ant-...
 
-# Airtable Configuration (optional)
-AIRTABLE_API_KEY=pat...
+# Airtable Configuration (required for content)
+AIRTABLE_API_KEY=pat...  # Full Personal Access Token
 AIRTABLE_BASE_ID=app...
-AIRTABLE_TABLE_NAME=Content
 
 # Server Configuration
 PORT=8000
@@ -103,11 +102,11 @@ backend/
 │   ├── prompts.yaml             # Externalized prompts
 │   ├── ai_orchestrator.py       # Provider selection logic
 │   ├── session_manager.py       # Session storage
-│   └── services/
-│       ├── __init__.py
-│       ├── claude_service.py    # Anthropic Claude integration
-│       ├── openai_service.py    # OpenAI GPT integration
-│       └── airtable_service.py  # Curriculum content
+│   ├── claude_service.py        # Anthropic Claude integration
+│   ├── openai_service.py        # OpenAI GPT integration
+│   ├── airtable_service.py      # Curriculum content service
+│   └── api/
+│       └── content.py           # Content API endpoints
 ├── tests/
 │   └── test_main.py             # Basic API tests
 ├── requirements.txt             # Python dependencies
@@ -123,25 +122,37 @@ POST /api/chat/message
 Content-Type: application/json
 
 {
-  "message": "Can you help me understand fractions?",
+  "message": "Can you help me understand how light works?",
   "session_id": "550e8400-e29b-41d4-a716-446655440000",
-  "mode": "learning"  // Optional: auto-detected if not provided
+  "force_provider": "claude",  // Optional: auto-selected if not provided
+  "force_mode": "learning"  // Optional: auto-detected if not provided
 }
 ```
 
 **Response:**
 ```json
 {
-  "response": "I'd love to help you with fractions! 🍕 Let's start by thinking about something you know well. Have you ever shared a pizza with friends? When you cut a pizza into slices, you're actually creating fractions! What do you already know about fractions?",
-  "mode": "learning",
-  "provider": "anthropic",
+  "response": "Of course! I'm thrilled to dive into the world of light with you...",
   "session_id": "550e8400-e29b-41d4-a716-446655440000",
-  "message_id": "msg_123",
+  "provider": "claude",
+  "mode": "learning",
+  "has_activity": true,
+  "activity_markers": null,
+  "curriculum_content": {
+    "topic": "Light",
+    "learning_objectives": ["2.5 Investigate reflection of light"],
+    "canadian_examples": ["Northern Lights in Yukon"]
+  },
   "metadata": {
-    "provider_used": "anthropic",
-    "fallback_used": false,
-    "mode_detected": "learning"
-  }
+    "curriculum_topic": "light",
+    "learning_objectives": ["2.5 Investigate reflection of light"],
+    "canadian_examples": ["Northern Lights in Yukon", "Sunrise over Lake Ontario"],
+    "suggested_activity": {
+      "name": "Shadow Puppet Theatre",
+      "description": "Create shadows using flashlights and objects"
+    }
+  },
+  "timestamp": "2025-08-18T12:00:00Z"
 }
 ```
 
@@ -152,13 +163,55 @@ GET /api/health
 Response:
 {
   "status": "healthy",
-  "providers": {
+  "version": "0.1.0",
+  "timestamp": "2025-08-18T12:00:00Z",
+  "services": {
+    "claude": true,
     "openai": true,
-    "anthropic": true
-  },
-  "airtable": false,
-  "version": "1.0.0"
+    "airtable": true
+  }
 }
+```
+
+### Content Endpoints
+```http
+GET /api/content/curriculum/topics?topic=light
+
+Response:
+[
+  {
+    "topic": "Light",
+    "content": "Learn how light bounces off surfaces",
+    "grade_level": "Grade 4",
+    "learning_objectives": ["2.5 Investigate reflection of light"],
+    "canadian_examples": ["Reflections on Canada's many lakes"]
+  }
+]
+```
+
+```http
+GET /api/content/activities?topic=light
+
+Response:
+[
+  {
+    "name": "Shadow Puppet Theatre",
+    "description": "Create shadows using flashlights and objects",
+    "materials": ["Flashlight", "Paper", "Objects"],
+    "learning_outcome": "Understanding how shadows are formed"
+  }
+]
+```
+
+```http
+GET /api/content/canadian-examples?topic=light
+
+Response:
+[
+  "Northern Lights in Yukon",
+  "Sunrise over Lake Ontario",
+  "Reflections on Lake Louise"
+]
 ```
 
 ### Session Management
@@ -228,25 +281,31 @@ activity_prompt: |
 
 ### OpenAI Service
 - **Model**: GPT-4 Turbo (gpt-4-turbo-preview)
-- **Strengths**: Technical explanations, math, code
-- **Token Limit**: 4096 response tokens
+- **Strengths**: Clear explanations, step-by-step teaching, technical topics
+- **Token Limit**: 1000 response tokens
 - **Temperature**: 0.7 for creativity
+- **Content Integration**: Incorporates activities and Canadian examples naturally
 
 ### Anthropic Service
-- **Model**: Claude 3 Sonnet
-- **Strengths**: Socratic method, storytelling, empathy
-- **Token Limit**: 4096 response tokens
+- **Model**: Claude 3.5 Sonnet (claude-3-5-sonnet-20241022)
+- **Strengths**: Socratic method, storytelling, empathy, discovery learning
+- **Token Limit**: 1000 response tokens
 - **Temperature**: 0.7 for natural conversation
+- **Content Integration**: Naturally weaves curriculum content into responses
 
 ### Provider Selection Logic
 ```python
 # Simplified decision tree
-if "math" or "code" in message:
-    use_openai()
-elif mode == "learning" or mode == "story":
-    use_anthropic()
+if mode == ConversationMode.EXPLANATORY:
+    provider = AIProvider.OPENAI
+elif mode in [ConversationMode.LEARNING, ConversationMode.DISCOVERY]:
+    provider = AIProvider.CLAUDE
+elif mode == ConversationMode.STORY:
+    provider = AIProvider.CLAUDE if len(messages) < 10 else AIProvider.OPENAI
 else:
-    use_anthropic()  # Default
+    provider = AIProvider.CLAUDE  # Default
+
+# Automatic failover if primary provider fails
 ```
 
 ## Testing Strategy

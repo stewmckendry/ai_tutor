@@ -9,8 +9,9 @@ The curriculum content system provides structured access to Ontario Grade 4 Scie
 ### Data Storage
 - **Platform**: Airtable
 - **Base ID**: Configured via environment variable `AIRTABLE_BASE_ID`
-- **API Access**: Personal Access Token (PAT) with appropriate scopes
-- **Caching**: In-memory caching with configurable TTL
+- **API Access**: Personal Access Token (PAT) with full token format
+- **Caching**: In-memory caching with JSON file fallback
+- **Integration**: Content fetched during chat when topics detected
 
 ### Database Schema
 
@@ -19,9 +20,11 @@ The Airtable base consists of 6 interconnected tables:
 #### 1. Grade4_Science_Curriculum
 Primary curriculum content aligned with Ontario expectations.
 
+**Note**: Table uses underscore format, field names use spaces (e.g., "Topic Name")
+
 | Field | Type | Description |
 |-------|------|-------------|
-| topic_name | Single line text | Main topic (e.g., "Light", "Sound") |
+| Topic Name | Single line text | Main topic (e.g., "Light", "Sound") |
 | subtopic | Single line text | Specific subtopic |
 | curriculum_expectation | Long text | Ontario curriculum code and expectation |
 | description | Long text | Topic description |
@@ -166,13 +169,11 @@ Retrieve Canadian examples for a topic.
 
 **Response:**
 ```json
-{
-  "data": [
-    "Northern Lights in Yellowknife",
-    "Rainbow at Niagara Falls",
-    "Peggy's Cove Lighthouse"
-  ]
-}
+[
+  "Northern Lights in Yukon",
+  "Sunrise over Lake Ontario",
+  "Reflections on Lake Louise"
+]
 ```
 
 #### GET /health
@@ -182,8 +183,9 @@ Check Airtable service health status.
 ```json
 {
   "status": "healthy",
-  "service": "airtable",
-  "initialized": true
+  "airtable_connected": true,
+  "cache_size": 6,
+  "last_refresh": "2025-08-18T12:00:00Z"
 }
 ```
 
@@ -247,6 +249,34 @@ Every topic should include:
 - **Advanced**: Complex exploration, 35-45 minutes
 
 ## Integration with AI Orchestrator
+
+### Content Flow in Chat
+1. **User Message**: "Can you help me understand how light works?"
+2. **Topic Extraction**: AI orchestrator detects "light" topic
+3. **Content Fetching**: System fetches:
+   - Curriculum data (learning objectives, key concepts)
+   - Activities (Shadow Puppet Theatre)
+   - Canadian examples (Northern Lights, Lake Ontario)
+4. **LLM Context**: Content passed to Claude/OpenAI as context
+5. **Natural Integration**: LLM weaves content into response:
+   - "Speaking of reflections, have you ever heard of the Northern Lights..."
+   - "Now, how about we try an activity to see how light and shadows work..."
+6. **Metadata Response**: Structured data returned for frontend use
+
+### Authentication Configuration
+```env
+# Full PAT format required
+AIRTABLE_API_KEY=pat[prefix].[suffix]
+AIRTABLE_BASE_ID=app[id]
+```
+
+## Current Implementation Status
+- ✅ Airtable authentication fixed (full PAT token)
+- ✅ Table names corrected (Grade4_Science_Curriculum)
+- ✅ Field mappings updated (Topic Name with space)
+- ✅ Content APIs exposed and functional
+- ✅ Natural content integration in LLM responses
+- ✅ Fallback content for resilience
 
 The curriculum content integrates with the AI orchestrator to:
 

@@ -17,6 +17,7 @@ from app.models import (
 from app.session_manager import SessionManager
 from app.ai_orchestrator import AIOrchestrator
 from app.airtable_service import AirtableService
+from app.api import content
 
 logging.basicConfig(
     level=logging.DEBUG if settings.debug else logging.INFO,
@@ -37,6 +38,9 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+# Include content router for Airtable curriculum endpoints
+app.include_router(content.router, prefix="/api/content", tags=["content"])
 
 session_manager = SessionManager()
 ai_orchestrator = AIOrchestrator()
@@ -120,18 +124,33 @@ async def chat_message(request: ChatRequest):
         )
         
         curriculum_content = None
+        canadian_examples = []
+        activities = []
         topic = ai_orchestrator.extract_topic(request.message)
         if topic:
+            # Fetch all content types for the topic
             curriculum_content = await airtable_service.get_content_for_topic(topic)
+            canadian_examples = await airtable_service.get_canadian_examples(topic)
+            activities = await airtable_service.get_activities(topic)
+            
             session_manager.update_session_metadata(
                 session_id, 
                 {"current_topic": topic}
             )
         
+        # Prepare enriched content for AI orchestrator
+        enriched_content = None
+        if curriculum_content:
+            enriched_content = {
+                **curriculum_content,
+                "canadian_examples": canadian_examples,
+                "activities": activities
+            }
+        
         ai_response = await ai_orchestrator.process_message(
             message=request.message,
             session=session,
-            curriculum_content=curriculum_content,
+            curriculum_content=enriched_content,
             force_provider=request.force_provider,
             force_mode=request.force_mode
         )
@@ -148,6 +167,17 @@ async def chat_message(request: ChatRequest):
             ai_response["response"]
         )
         
+        # Build metadata for response
+        metadata = {}
+        if topic:
+            metadata["curriculum_topic"] = topic
+            if curriculum_content:
+                metadata["learning_objectives"] = curriculum_content.get("learning_objectives", [])
+            if canadian_examples:
+                metadata["canadian_examples"] = canadian_examples[:2]  # Limit to 2 examples
+            if activities:
+                metadata["suggested_activity"] = activities[0] if activities else None
+        
         return ChatResponse(
             response=ai_response["response"],
             session_id=session_id,
@@ -155,7 +185,8 @@ async def chat_message(request: ChatRequest):
             mode=ai_response["mode"],
             has_activity=len(activity_markers) > 0,
             activity_markers=activity_markers if activity_markers else None,
-            curriculum_content=curriculum_content
+            curriculum_content=curriculum_content,
+            metadata=metadata if metadata else None
         )
         
     except Exception as e:

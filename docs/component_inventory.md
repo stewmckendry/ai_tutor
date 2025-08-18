@@ -4,7 +4,7 @@
 
 This inventory catalogs all reusable components in the AI Tutor project. Each component is documented with its purpose, location, and usage patterns to ensure consistency and reusability across the application.
 
-**Last Updated**: Issue #6 - Airtable Curriculum Content
+**Last Updated**: Issue #1d - Integration (2025-08-18)
 
 ---
 
@@ -48,6 +48,7 @@ This inventory catalogs all reusable components in the AI Tutor project. Each co
 - Auto-scrolling message list
 - Message input area
 - Responsive height management
+- Topic pills for quick subject selection (when messages.length <= 2)
 
 **Usage**:
 ```tsx
@@ -239,13 +240,12 @@ text-maple-100  /* Light text on maple background */
 - Session management
 - localStorage persistence
 - Message handling
-- Mock AI responses
+- Backend API integration
 
-**Helper Functions**:
-- `generateSessionId()` - Unique session IDs
-- `generateMessageId()` - Unique message IDs
-- `getSimulatedResponse()` - Mock AI responses
-- `maybeAddTodoMarkers()` - TODO detection
+**API Integration**:
+- Uses `services/api.ts` for backend communication
+- Sends messages to `/api/chat/message`
+- Handles real AI responses with metadata
 
 ---
 
@@ -255,6 +255,42 @@ text-maple-100  /* Light text on maple background */
 **Path**: `packages/web/public/maple-leaf.svg`  
 **Purpose**: Application logo/favicon  
 **Format**: SVG with red maple leaf design
+
+### TopicPills
+**Path**: `packages/web/src/components/TopicPills.tsx`  
+**Purpose**: Quick topic selection buttons for Grade 4 science subjects  
+**Props**:
+- `onTopicClick: (topic: string) => void` - Topic selection handler
+
+**Features**:
+- 6 Grade 4 science topics (Light, Sound, Structures, Habitats, Rocks, Pulleys)
+- Pre-written prompts for each topic
+- Gradient background styling
+- Mobile-responsive layout
+
+**Usage**:
+```tsx
+<TopicPills onTopicClick={onSendMessage} />
+```
+
+---
+
+## 🔧 Service Layer
+
+### API Service
+**Path**: `packages/web/src/services/api.ts`  
+**Purpose**: Centralized backend API communication  
+
+**Features**:
+- Type-safe request/response handling
+- Session ID management
+- Error handling
+- Axios HTTP client
+
+**Methods**:
+- `sendMessage(message: string, sessionId?: string)` - Send chat message
+- `getSession(sessionId: string)` - Retrieve session data
+- `checkHealth()` - API health check
 
 ---
 
@@ -312,6 +348,30 @@ text-maple-100  /* Light text on maple background */
 - Interaction tests for user input
 - Accessibility tests
 
+#### AirtableService
+**Path**: `backend/app/airtable_service.py`  
+**Purpose**: Airtable curriculum content integration  
+**Methods**:
+- `get_content_for_topic(topic)` - Fetch curriculum data
+- `get_activities(topic)` - Get topic activities
+- `get_canadian_examples(topic)` - Retrieve Canadian examples
+- `check_health()` - Check Airtable connectivity
+
+**Configuration**:
+- Personal Access Token (PAT) authentication
+- Base ID: Configured via environment
+- Table names: Grade4_Science_Curriculum, Activity_Templates, Canadian_Examples
+- Field mappings: "Topic Name" (with space)
+
+#### Content Router
+**Path**: `backend/app/api/content.py`  
+**Purpose**: RESTful endpoints for content access  
+**Endpoints**:
+- `GET /api/content/health` - Service health check
+- `GET /api/content/curriculum/topics?topic={topic}` - Get curriculum data
+- `GET /api/content/activities?topic={topic}` - Get activities
+- `GET /api/content/canadian-examples?topic={topic}` - Get Canadian examples
+
 ---
 
 ## 📊 Impact Assessment
@@ -337,25 +397,29 @@ text-maple-100  /* Light text on maple background */
 ### API Endpoints
 
 #### POST /api/chat/message
-**Path**: `backend/app/main.py:50-90`  
-**Purpose**: Process chat messages with AI providers  
+**Path**: `backend/app/main.py`  
+**Purpose**: Process chat messages with AI providers and curriculum content  
 **Request Body**:
 ```python
 class ChatRequest(BaseModel):
     message: str
     session_id: Optional[str] = None
-    mode: Optional[ConversationMode] = None
+    force_provider: Optional[AIProvider] = None
+    force_mode: Optional[ConversationMode] = None
 ```
 
 **Response**:
 ```python
 class ChatResponse(BaseModel):
     response: str
-    mode: ConversationMode
-    provider: str
     session_id: str
-    message_id: str
-    metadata: Optional[Dict] = None
+    provider: AIProvider
+    mode: ConversationMode
+    has_activity: bool
+    activity_markers: Optional[List[str]]
+    curriculum_content: Optional[Dict[str, Any]]
+    metadata: Optional[Dict[str, Any]]  # Includes canadian_examples, activities
+    timestamp: datetime
 ```
 
 **Features**:
@@ -369,16 +433,18 @@ class ChatResponse(BaseModel):
 ### AI Services
 
 #### ClaudeService
-**Path**: `backend/app/services/claude_service.py`  
+**Path**: `backend/app/claude_service.py`  
 **Purpose**: Anthropic Claude API integration  
 **Methods**:
-- `generate_response(prompt: str, conversation_history: List[Dict])` - Generate AI response
-- `is_available()` - Check service availability
+- `generate_response(messages, system_prompt, mode, curriculum_content)` - Generate AI response
+- `check_health()` - Check service availability
+- `_enhance_system_prompt()` - Integrate curriculum content naturally
 
 **Configuration**:
-- Model: Claude 3 Sonnet
-- Max tokens: 4096
+- Model: Claude 3.5 Sonnet (claude-3-5-sonnet-20241022)
+- Max tokens: 1000
 - Temperature: 0.7
+- Natural content weaving enabled
 
 **Usage**:
 ```python
@@ -387,16 +453,18 @@ response = await service.generate_response(prompt, history)
 ```
 
 #### OpenAIService
-**Path**: `backend/app/services/openai_service.py`  
+**Path**: `backend/app/openai_service.py`  
 **Purpose**: OpenAI GPT-4 API integration  
 **Methods**:
-- `generate_response(prompt: str, conversation_history: List[Dict])` - Generate AI response
-- `is_available()` - Check service availability
+- `generate_response(messages, system_prompt, mode, curriculum_content)` - Generate AI response
+- `check_health()` - Check service availability
+- `_enhance_system_prompt()` - Integrate curriculum content naturally
 
 **Configuration**:
-- Model: GPT-4 Turbo
-- Max tokens: 4096
+- Model: GPT-4 Turbo (gpt-4-turbo-preview)
+- Max tokens: 1000
 - Temperature: 0.7
+- Natural content weaving enabled
 
 ---
 
