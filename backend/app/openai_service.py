@@ -112,17 +112,34 @@ class OpenAIService:
             enhanced += "\n\nMode: LEARNING - Balance explanation with questions. Help the student understand by providing clear guidance."
         
         if curriculum_content:
-            enhanced += f"\n\nCurriculum Context: {curriculum_content.get('topic', 'General')}"
+            enhanced += f"\n\n=== CURRICULUM CONTENT TO INTEGRATE ===\nTopic: {curriculum_content.get('topic', 'General')}"
             enhanced += f"\nGrade Level: {curriculum_content.get('grade_level', 'Grade 4')}"
             
-            if curriculum_content.get('canadian_examples'):
-                enhanced += f"\nCanadian Context: Use these examples when relevant: {', '.join(curriculum_content['canadian_examples'][:3])}"
-            
+            # Add learning objectives
             if curriculum_content.get('learning_objectives'):
-                enhanced += f"\nLearning Goals: {', '.join(curriculum_content['learning_objectives'][:3])}"
+                enhanced += f"\n\nLearning Objectives to cover:"
+                for obj in curriculum_content['learning_objectives'][:3]:
+                    enhanced += f"\n• {obj}"
             
+            # Add Canadian examples to weave in naturally
+            if curriculum_content.get('canadian_examples'):
+                enhanced += f"\n\nCanadian Examples - MUST naturally incorporate at least one:"
+                for i, example in enumerate(curriculum_content['canadian_examples'][:2], 1):
+                    enhanced += f"\n{i}. {example}"
+                enhanced += "\nWeave these examples into your explanation naturally, don't just list them."
+            
+            # Add activities to suggest
             if curriculum_content.get('activities'):
-                enhanced += "\nHands-on Activities Available: Suggest TODO activities when appropriate."
+                activity = curriculum_content['activities'][0]
+                enhanced += f"\n\nActivity to naturally suggest (work this into the conversation):"
+                enhanced += f"\nActivity: {activity.get('name', 'Hands-on activity')}"
+                enhanced += f"\nDescription: {activity.get('description', '')}"
+                if activity.get('materials'):
+                    materials_str = ', '.join(activity['materials'][:5])
+                    enhanced += f"\nMaterials: {materials_str}"
+                enhanced += "\n\nDon't just append this activity - introduce it naturally as part of your response, like 'Here's something cool we could try...' or 'Want to experiment? We could...'"
+            
+            enhanced += "\n\nIMPORTANT: Integrate all content naturally into your response. Don't use obvious markers or sections. Make it flow as one cohesive, engaging explanation."
         
         enhanced += """
         
@@ -131,8 +148,8 @@ Important Guidelines:
 - Use simple, clear language
 - Be encouraging and positive
 - Make connections to everyday life
-- Include Canadian references when possible
-- Mark hands-on activities with 'TODO:' prefix
+- Integrate Canadian examples naturally when provided
+- Suggest activities conversationally, not as a separate section
 """
         
         return enhanced

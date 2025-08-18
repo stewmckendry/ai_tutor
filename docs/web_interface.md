@@ -13,7 +13,7 @@ The web interface provides a child-friendly chat experience for Grade 4 students
 - **TypeScript**: Type-safe development
 - **Vite**: Fast build tooling and HMR
 - **Tailwind CSS**: Utility-first styling
-- **Socket.io Client**: WebSocket support for real-time updates
+- **Axios**: HTTP client for API calls
 - **localStorage**: Client-side session persistence
 
 ### Key Design Decisions
@@ -27,12 +27,13 @@ The web interface provides a child-friendly chat experience for Grade 4 students
 
 ### Core Functionality
 - 💬 Real-time chat interface with AI tutor
-- 📝 TODO marker highlighting for learning objectives
+- 🎓 Topic pills for quick subject selection
+- 📝 Activity and example integration in responses
 - 💾 Session persistence with localStorage
 - 📱 Mobile-responsive design
-- ⌨️ Typing indicators for AI responses
-- 🔄 WebSocket support for real-time updates
+- ⌨️ Loading states for AI responses
 - 🍁 Canadian-themed UI with Maple branding
+- 📊 Metadata display for curriculum content
 
 ### User Experience
 - **Auto-scrolling**: Always shows latest message
@@ -56,7 +57,7 @@ npm install
 
 ### Development Commands
 ```bash
-# Start development server (port 3000)
+# Start development server (port 5173 with Vite)
 npm run dev
 
 # Build for production
@@ -84,8 +85,11 @@ packages/web/
 │   │   ├── MessageInput.tsx     # Message input area
 │   │   ├── MessageItem.tsx      # Individual message
 │   │   ├── MessageList.tsx      # Message container
+│   │   ├── TopicPills.tsx       # Quick topic buttons
 │   │   ├── ErrorBoundary.tsx    # Error handling
 │   │   └── Loading.tsx          # Loading states
+│   ├── services/        # API integration
+│   │   └── api.ts        # Backend communication
 │   ├── types/           # TypeScript definitions
 │   │   └── chat.ts      # Message/Session types
 │   ├── App.tsx          # Main application
@@ -101,6 +105,7 @@ packages/web/
 App.tsx (Session Management)
     ├── Header.tsx (Navigation)
     └── ChatInterface.tsx (Chat Container)
+        ├── TopicPills.tsx (Quick Topics)
         ├── MessageList.tsx (Message Display)
         │   └── MessageItem.tsx (Individual Messages)
         └── MessageInput.tsx (User Input)
@@ -117,22 +122,28 @@ App.tsx (Session Management)
 interface Message {
   id: string;
   content: string;
-  role: 'user' | 'assistant' | 'system';
-  timestamp: Date;
+  role: 'user' | 'assistant';
+  timestamp: string;
   metadata?: {
-    isTyping?: boolean;
-    hasTodo?: boolean;
-    todoItems?: string[];
-    error?: string;
+    provider?: 'claude' | 'openai';
+    mode?: 'learning' | 'explanatory' | 'story' | 'discovery';
+    curriculum_topic?: string;
+    learning_objectives?: string[];
+    canadian_examples?: string[];
+    suggested_activity?: Activity;
   };
 }
 
-interface ChatSession {
-  id: string;
-  messages: Message[];
-  startedAt: Date;
-  lastActivityAt: Date;
-  title?: string;
+interface ChatResponse {
+  response: string;
+  session_id: string;
+  provider: string;
+  mode: string;
+  has_activity: boolean;
+  activity_markers: string[] | null;
+  curriculum_content: any;
+  metadata: any;
+  timestamp: string;
 }
 ```
 
@@ -141,28 +152,29 @@ interface ChatSession {
 ### Environment Variables
 ```env
 # Backend API endpoint
-VITE_API_URL=http://localhost:3001
+VITE_API_URL=http://localhost:8000
 
-# WebSocket endpoint
-VITE_WS_URL=ws://localhost:3001
-
-# Feature flags
+# Feature flags (future)
 VITE_ENABLE_VOICE=false
 VITE_ENABLE_ANALYTICS=false
 ```
 
 ### Backend Integration Points
-1. **Message API**: POST /api/chat/message
-2. **Session API**: GET/POST /api/sessions
-3. **WebSocket**: /ws for real-time updates
-4. **Authentication**: Future OAuth2/JWT support
+1. **Chat API**: POST /api/chat/message
+2. **Session API**: GET /api/session/{session_id}
+3. **Health Check**: GET /api/health
+4. **Content APIs**: 
+   - GET /api/content/curriculum/topics
+   - GET /api/content/activities
+   - GET /api/content/canadian-examples
 
-### Current Mock Implementation
-The app currently uses simulated responses for development:
-- Detects keywords (math, science, homework)
-- Returns contextual mock responses
-- Simulates typing delay (1.5s)
-- Adds TODO markers for practice-related queries
+### API Service Layer
+The app uses a centralized API service (`services/api.ts`):
+- Axios for HTTP requests
+- Type-safe request/response handling
+- Error handling and retry logic
+- Session ID management
+- CORS configuration
 
 ## Testing Strategy
 

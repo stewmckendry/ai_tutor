@@ -40,6 +40,7 @@ class ChatResponse(BaseModel):
     has_activity: bool = False
     activity_markers: Optional[List[str]] = None
     curriculum_content: Optional[Dict[str, Any]] = None
+    metadata: Optional[Dict[str, Any]] = None  # Enhanced metadata
     timestamp: datetime = Field(default_factory=datetime.utcnow)
 
 

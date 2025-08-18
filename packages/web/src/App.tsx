@@ -3,6 +3,7 @@ import ChatInterface from './components/ChatInterface';
 import Header from './components/Header';
 import Loading from './components/Loading';
 import { Message, ChatSession } from './types/chat';
+import { apiService } from './services/api';
 
 function App() {
   const [session, setSession] = useState<ChatSession | null>(null);
@@ -58,7 +59,7 @@ function App() {
     setSession(newSession);
   };
 
-  const handleSendMessage = (content: string) => {
+  const handleSendMessage = async (content: string) => {
     if (!session) return;
 
     const userMessage: Message = {
@@ -77,7 +78,7 @@ function App() {
     setSession(updatedSession);
 
     // Add typing indicator
-    setTimeout(() => {
+    setTimeout(async () => {
       const typingMessage: Message = {
         id: generateMessageId(),
         content: '',
@@ -92,14 +93,16 @@ function App() {
         lastActivityAt: new Date(),
       } : null);
 
-      // Simulate AI response (replace with actual API call)
-      setTimeout(() => {
+      // Call actual API
+      try {
+        const response = await apiService.sendMessage(content, session.id);
+        
         const assistantMessage: Message = {
           id: generateMessageId(),
-          content: getSimulatedResponse(content),
+          content: response.response,
           role: 'assistant',
           timestamp: new Date(),
-          metadata: maybeAddTodoMarkers(content),
+          metadata: response.metadata,
         };
 
         setSession(prev => {
@@ -112,7 +115,28 @@ function App() {
             lastActivityAt: new Date(),
           };
         });
-      }, 1500);
+      } catch (error) {
+        console.error('Failed to send message:', error);
+        
+        // Remove typing indicator and show error message
+        const errorMessage: Message = {
+          id: generateMessageId(),
+          content: 'Sorry, I had trouble processing that. Please try again.',
+          role: 'assistant',
+          timestamp: new Date(),
+          metadata: { isError: true }
+        };
+
+        setSession(prev => {
+          if (!prev) return null;
+          const filteredMessages = prev.messages.filter(msg => !msg.metadata?.isTyping);
+          return {
+            ...prev,
+            messages: [...filteredMessages, errorMessage],
+            lastActivityAt: new Date(),
+          };
+        });
+      }
     }, 500);
   };
 

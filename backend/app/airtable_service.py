@@ -37,7 +37,7 @@ class AirtableService:
             return False
         
         try:
-            curriculum_table = self.base.table('Curriculum')
+            curriculum_table = self.base.table('Grade4_Science_Curriculum')
             records = curriculum_table.all(max_records=1)
             return True
         except Exception as e:
@@ -53,13 +53,13 @@ class AirtableService:
             return self.cache[cache_key]
         
         try:
-            curriculum_table = self.base.table('Curriculum')
+            curriculum_table = self.base.table('Grade4_Science_Curriculum')
             
-            formula = f"LOWER({{Topic}}) = '{topic.lower()}'"
+            formula = f"LOWER({{Topic Name}}) = '{topic.lower()}'"
             records = curriculum_table.all(formula=formula)
             
             if not records:
-                formula = f"SEARCH('{topic.lower()}', LOWER({{Topic}})) > 0"
+                formula = f"SEARCH('{topic.lower()}', LOWER({{Topic Name}})) > 0"
                 records = curriculum_table.all(formula=formula)
             
             if records:
@@ -76,15 +76,19 @@ class AirtableService:
     async def get_canadian_examples(self, topic: str) -> List[str]:
         """Get Canadian examples for a topic"""
         try:
-            examples_table = self.base.table('CanadianExamples')
+            examples_table = self.base.table('Canadian_Examples')
             
-            formula = f"LOWER({{Topic}}) = '{topic.lower()}'"
+            formula = f"LOWER({{Topic Name}}) = '{topic.lower()}'"
             records = examples_table.all(formula=formula)
             
             examples = []
             for record in records:
-                if 'fields' in record and 'Example' in record['fields']:
-                    examples.append(record['fields']['Example'])
+                if 'fields' in record and 'Example Title' in record['fields']:
+                    example_text = record['fields'].get('Example Title', '')
+                    description = record['fields'].get('Description', '')
+                    if description:
+                        example_text = f"{example_text}: {description}"
+                    examples.append(example_text)
             
             return examples
             
@@ -95,20 +99,20 @@ class AirtableService:
     async def get_activities(self, topic: str) -> List[Dict[str, Any]]:
         """Get hands-on activities for a topic"""
         try:
-            activities_table = self.base.table('Activities')
+            activities_table = self.base.table('Activity_Templates')
             
-            formula = f"LOWER({{Topic}}) = '{topic.lower()}'"
+            formula = f"LOWER({{Topic Name}}) = '{topic.lower()}'"
             records = activities_table.all(formula=formula)
             
             activities = []
             for record in records:
                 if 'fields' in record:
                     activity = {
-                        'name': record['fields'].get('Name', 'Activity'),
-                        'description': record['fields'].get('Description', ''),
-                        'materials': record['fields'].get('Materials', '').split(',') if record['fields'].get('Materials') else [],
-                        'steps': record['fields'].get('Steps', '').split('\n') if record['fields'].get('Steps') else [],
-                        'learning_outcome': record['fields'].get('LearningOutcome', '')
+                        'name': record['fields'].get('Activity Name', 'Activity'),
+                        'description': record['fields'].get('Instructions', ''),
+                        'materials': record['fields'].get('Materials Needed', '').split(',') if record['fields'].get('Materials Needed') else [],
+                        'steps': record['fields'].get('Instructions', '').split('\n') if record['fields'].get('Instructions') else [],
+                        'learning_outcome': record['fields'].get('Discussion Prompts', '')
                     }
                     activities.append(activity)
             
@@ -133,14 +137,16 @@ class AirtableService:
         fields = record.get('fields', {})
         
         return {
-            'topic': fields.get('Topic', ''),
-            'content': fields.get('Content', ''),
-            'grade_level': fields.get('GradeLevel', 'Grade 4'),
-            'learning_objectives': fields.get('LearningObjectives', '').split('\n') if fields.get('LearningObjectives') else [],
-            'key_concepts': fields.get('KeyConcepts', '').split(',') if fields.get('KeyConcepts') else [],
-            'vocabulary': fields.get('Vocabulary', '').split(',') if fields.get('Vocabulary') else [],
-            'ontario_expectations': fields.get('OntarioExpectations', ''),
-            'assessment_ideas': fields.get('AssessmentIdeas', '').split('\n') if fields.get('AssessmentIdeas') else []
+            'topic': fields.get('Topic Name', ''),
+            'content': fields.get('Description', ''),
+            'grade_level': 'Grade 4',
+            'learning_objectives': [fields.get('Curriculum Expectation', '')] if fields.get('Curriculum Expectation') else [],
+            'key_concepts': fields.get('Key Concepts', []) if isinstance(fields.get('Key Concepts'), list) else [],
+            'vocabulary': [],  # Not in current schema
+            'ontario_expectations': fields.get('Curriculum Expectation', ''),
+            'assessment_ideas': [],  # Not in current schema
+            'canadian_examples': [fields.get('Canadian Connection', '')] if fields.get('Canadian Connection') else [],
+            'indigenous_perspective': fields.get('Indigenous Perspective', '')
         }
     
     def _is_cache_valid(self, key: str) -> bool:
