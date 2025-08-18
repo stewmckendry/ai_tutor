@@ -1,5 +1,11 @@
 # 🤖 Claude Code Implementation Guide
 
+## 📊 Implementation Status
+- ✅ **Issue #4**: Frontend Chat Interface (React/TypeScript/Vite)
+- ✅ **Issue #5**: Backend API (FastAPI/AI Orchestration)
+- ✅ **Issue #6**: Airtable Content (Curriculum/Activities/Examples)
+- 🚧 **Issue #7**: Integration & Deployment (Next)
+
 ## Project Overview
 You are building **Maple**, an AI-powered tutor for Ontario Grade 4 students (ages 9-10). This system uses adaptive AI to provide personalized, curriculum-aligned education with a focus on maintaining intellectual curiosity and critical thinking skills.
 
@@ -38,35 +44,45 @@ You are building **Maple**, an AI-powered tutor for Ontario Grade 4 students (ag
 ### Code Structure
 ```
 ai_tutor/
-├── frontend/             # React TypeScript app
-│   ├── src/
-│   ├── public/
-│   └── package.json
-├── backend/              # Python FastAPI app
+├── packages/
+│   └── web/              # React TypeScript app (Issue #4 ✅)
+│       ├── src/
+│       ├── public/
+│       └── package.json
+├── backend/              # Python FastAPI app (Issue #5 ✅)
 │   ├── app/
-│   │   ├── api/         # API routes
-│   │   ├── core/        # Core logic
-│   │   ├── models/      # Pydantic models
-│   │   ├── services/    # Business logic
-│   │   └── main.py      # FastAPI app
-│   ├── tests/
+│   │   ├── api/         # API routes (content.py)
+│   │   ├── models/      # Pydantic models (content.py)
+│   │   ├── main.py      # FastAPI app
+│   │   ├── ai_orchestrator.py
+│   │   ├── claude_service.py
+│   │   ├── openai_service.py
+│   │   ├── airtable_service.py
+│   │   ├── session_manager.py
+│   │   ├── prompts.py
+│   │   └── prompts.yaml
 │   └── requirements.txt
-├── content/              # RAG and curriculum data
-│   ├── embeddings/
-│   ├── curriculum/
-│   └── canadian/
+├── content/              # Curriculum data (Issue #6 ✅)
+│   ├── curriculum_data.json
+│   ├── activity_templates.json
+│   ├── canadian_examples.json
+│   └── story_characters.json
 ├── docs/                 # Technical documentation
-└── scripts/              # Build and deployment scripts
+│   ├── backend.md
+│   ├── web_interface.md
+│   ├── curriculum_content.md
+│   └── component_inventory.md
+└── README.md
 ```
 
-### Tech Stack
-- **Frontend**: React 18, TypeScript, Tailwind CSS, Socket.io-client
-- **Backend**: Python 3.11+, FastAPI, Pydantic, SQLAlchemy
-- **AI**: Anthropic SDK (Claude), OpenAI SDK
-- **Database**: PostgreSQL (sessions), Pinecone/Weaviate (vectors)
-- **Cache**: Redis
-- **Infrastructure**: Docker, n8n workflows
-- **Testing**: Pytest (backend), Jest (frontend)
+### Tech Stack (As Implemented)
+- **Frontend**: React 18, TypeScript, Vite, Tailwind CSS ✅
+- **Backend**: Python 3.11+, FastAPI, Pydantic ✅
+- **AI**: Anthropic SDK (Claude), OpenAI SDK ✅
+- **Content**: Airtable API, JSON fallback files ✅
+- **Session**: In-memory session management ✅
+- **Prompts**: YAML-based configuration ✅
+- **Testing**: Pytest (backend), component tests (frontend)
 
 ### Git Workflow
 ```bash
@@ -347,13 +363,9 @@ In learning mode:
 CLAUDE_API_KEY=sk-ant-...
 OPENAI_API_KEY=sk-...
 
-# Database
-DATABASE_URL=postgresql://user:pass@localhost/maple_tutor
-REDIS_URL=redis://localhost:6379
-
-# Vector DB
-PINECONE_API_KEY=your-key
-PINECONE_ENVIRONMENT=us-west1-gcp
+# Content Management
+AIRTABLE_API_KEY=pat...
+AIRTABLE_BASE_ID=app...
 
 # API Settings
 API_HOST=0.0.0.0
@@ -363,6 +375,10 @@ API_RELOAD=true
 # Security
 SECRET_KEY=your-secret-key
 ALLOWED_ORIGINS=["http://localhost:3000"]
+
+# Session Settings
+SESSION_TIMEOUT_MINUTES=30
+MAX_SESSIONS=100
 
 # Rate Limiting
 RATE_LIMIT_PER_MINUTE=20
@@ -389,9 +405,9 @@ isort app/
 mypy app/
 
 # Frontend Development
-cd frontend
+cd packages/web
 npm install
-npm run dev
+npm run dev  # Vite dev server at http://localhost:3000
 
 # Git workflow
 git status
@@ -401,7 +417,7 @@ git push
 gh pr create
 ```
 
-### Python Dependencies
+### Python Dependencies (Actual)
 ```txt
 # requirements.txt
 fastapi==0.109.0
@@ -410,13 +426,9 @@ pydantic==2.5.0
 python-dotenv==1.0.0
 anthropic==0.18.0
 openai==1.10.0
-sqlalchemy==2.0.25
-asyncpg==0.29.0
-redis==5.0.1
-pinecone-client==3.0.0
-langchain==0.1.0
-numpy==1.26.0
-pandas==2.1.0
+pyairtable==2.2.1
+pyyaml==6.0.1
+httpx==0.25.2
 pytest==7.4.0
 pytest-asyncio==0.23.0
 black==23.12.0
