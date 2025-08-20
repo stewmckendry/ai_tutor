@@ -47,6 +47,23 @@ Maple: "Exactly! Your iPad has tiny LEDs that change electrical energy
 into light energy. Just like the CN Tower lights in Toronto! 🏙️"
 ```
 
+## 🔄 **n8n Content Pipeline (NEW)**
+
+### Dynamic Content Generation
+- **Status**: ✅ **POC Working** (Issue #18 Complete)
+- **Location**: `/n8n` directory  
+- **Purpose**: Automated pipeline to fetch Canadian weather data and transform it into Grade 4 educational content
+- **Features**: Weather → AI enrichment → Airtable storage, hourly schedule, Grade 4 curriculum alignment
+
+### Quick Start
+```bash
+cd n8n
+./setup.sh  # Start n8n with Docker
+# Access at http://localhost:5678
+```
+
+See [n8n README](n8n/README.md) for full setup instructions.
+
 ## 🎨 **Current Implementation Status**
 
 ### ✅ **Completed: Full Integration (Issue #1d)**
@@ -101,21 +118,43 @@ into light energy. Just like the CN Tower lights in Toronto! 🏙️"
   - Full authentication with PAT tokens
   - Content APIs exposed and functional
 
+### ✅ **Completed: n8n Content Pipeline (Issue #18)**
+- **Automated Content Generation** - Weather data transformed into Grade 4 educational content
+- **Canadian Weather Integration** - Real-time data from Environment Canada (Toronto, Vancouver)
+- **AI Content Enrichment** - OpenAI GPT-3.5 creates curriculum-aligned educational content
+- **Airtable Storage** - Generated content stored in Maple_Grade4_Science base
+- **Scheduling & Monitoring** - Hourly execution with comprehensive error handling
+- **Pipeline Features**:
+  - Weather RSS feed parsing with error handling
+  - Grade 4 appropriate content generation with Canadian spelling
+  - Science curriculum connections (light, sound, energy concepts)
+  - Hands-on activity suggestions integrated into content
+  - Quality validation and monitoring tools included
+  - Docker-based n8n deployment for reliability
+
 ## 🏗️ **v0 Technical Architecture** 
 
-### **Simple Stack (8 Dependencies)**
+### **Enhanced Stack with Content Pipeline**
 ```
 ┌─────────────────┐    HTTPS     ┌──────────────────┐    API      ┌─────────────────┐
 │   React Chat    │─────────────▶│ Python FastAPI   │────────────▶│ Claude/OpenAI   │
 │   (Vercel)      │              │   (Railway)      │             │    APIs         │
 └─────────────────┘              └──────────────────┘             └─────────────────┘
-         │                                 │
-         │ localStorage                    │ Curriculum API
-         ▼                                 ▼
-┌─────────────────┐              ┌──────────────────┐
-│   Session Data  │              │    Airtable      │
-│   (Browser)     │              │   (Curriculum)   │
-└─────────────────┘              └──────────────────┘
+         │                                 │                               │
+         │ localStorage                    │ Curriculum API                │
+         ▼                                 ▼                               │
+┌─────────────────┐              ┌──────────────────┐                     │
+│   Session Data  │              │    Airtable      │◀────────────────────┘
+│   (Browser)     │              │   (Curriculum +  │                      
+└─────────────────┘              │   Dynamic Content│                      
+                                 └──────────────────┘                      
+                                          ▲                                
+                                          │ Generated Content              
+                                          │                                
+                                 ┌──────────────────┐    Weather    ┌─────────────────┐
+                                 │   n8n Pipeline   │─────────────▶│ Environment     │
+                                 │   (Docker)       │              │ Canada RSS      │
+                                 └──────────────────┘              └─────────────────┘
 ```
 
 ### **Core Components**
@@ -139,6 +178,13 @@ into light energy. Just like the CN Tower lights in Toronto! 🏙️"
 - Canadian examples (CN Tower, Northern Lights, hockey arenas)
 - Activity templates with TODO markers
 - Story characters for narrative mode
+
+#### **Content Pipeline (n8n)**
+- Automated weather data fetching from Environment Canada
+- AI content enrichment with OpenAI GPT-3.5
+- Grade 4 curriculum-aligned content generation
+- Hourly scheduled execution with error handling
+- Direct integration with Airtable for content storage
 
 ## 🚀 **Quick Start**
 
@@ -185,6 +231,19 @@ echo "REACT_APP_API_URL=http://localhost:8000" > .env
 npm start
 
 # App available at http://localhost:3000
+```
+
+### **n8n Content Pipeline Setup (Optional)**
+```bash
+cd n8n/
+
+# Start n8n with Docker
+./setup.sh
+
+# Access n8n at http://localhost:5678
+# Import workflow: workflows/weather_to_education_poc.json
+# Add API credentials (OpenAI + Airtable)
+# Enable hourly schedule for automated content generation
 ```
 
 ## 📚 **Current Content (Light & Sound Unit)**
