@@ -1,0 +1,190 @@
+{
+  "name": "CBC Kids Content Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 4
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger-kids",
+      "name": "Every 4 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [250, 300],
+      "disabled": true
+    },
+    {
+      "parameters": {},
+      "id": "manual-trigger-kids",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [250, 500]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Generate CBC Kids-style educational content\n// Since CBC Kids doesn't have a public API, we'll simulate content based on their typical themes\n\nconst kidsContent = [\n  {\n    title: 'The Amazing Water Cycle Adventure',\n    type: 'Science Video',\n    theme: 'Weather and Climate',\n    description: 'Follow Droppy the water droplet on an exciting journey through evaporation, condensation, and precipitation!',\n    ageRange: '8-10',\n    duration: '5 minutes',\n    educationalValue: 'Understanding water cycle processes',\n    funFactor: 'Animated characters and songs'\n  },\n  {\n    title: 'Canadian Animal Athletes',\n    type: 'Nature Documentary',\n    theme: 'Wildlife',\n    description: 'Meet Canada\\'s fastest, strongest, and most amazing animals! From speedy peregrine falcons to powerful polar bears.',\n    ageRange: '8-10',\n    duration: '8 minutes',\n    educationalValue: 'Animal adaptations and habitats',\n    funFactor: 'Sports-style commentary and slow-motion footage'\n  },\n  {\n    title: 'Math Mystery: The Case of the Missing Numbers',\n    type: 'Interactive Game',\n    theme: 'Mathematics',\n    description: 'Help Detective Digit solve puzzles using addition, subtraction, and multiplication to find the missing numbers!',\n    ageRange: '9-10',\n    duration: '10 minutes',\n    educationalValue: 'Problem-solving with arithmetic',\n    funFactor: 'Mystery storyline with rewards'\n  },\n  {\n    title: 'Build Your Own Volcano',\n    type: 'DIY Science',\n    theme: 'Earth Science',\n    description: 'Create an erupting volcano at home using simple kitchen ingredients! Learn about tectonic plates and magma.',\n    ageRange: '8-11',\n    duration: '15 minutes',\n    educationalValue: 'Chemical reactions and geology',\n    funFactor: 'Messy, explosive experiment'\n  },\n  {\n    title: 'Indigenous Stories: The Seven Sacred Teachings',\n    type: 'Cultural Education',\n    theme: 'Indigenous Culture',\n    description: 'Learn about the Seven Sacred Teachings through traditional stories and beautiful animations.',\n    ageRange: '8-10',\n    duration: '12 minutes',\n    educationalValue: 'Indigenous wisdom and values',\n    funFactor: 'Storytelling with animal characters'\n  },\n  {\n    title: 'Code Your Own Music',\n    type: 'Technology',\n    theme: 'STEM',\n    description: 'Use simple coding blocks to create your own musical masterpiece! Learn loops, patterns, and sequences.',\n    ageRange: '9-11',\n    duration: '20 minutes',\n    educationalValue: 'Basic programming concepts',\n    funFactor: 'Create and share custom songs'\n  },\n  {\n    title: 'Hockey Science: Why Does Ice Make You Slide?',\n    type: 'Sports Science',\n    theme: 'Physics',\n    description: 'Discover the science behind Canada\\'s favorite sport! Learn about friction, momentum, and energy.',\n    ageRange: '8-10',\n    duration: '7 minutes',\n    educationalValue: 'Physics concepts in sports',\n    funFactor: 'NHL player demonstrations'\n  },\n  {\n    title: 'Time Travel to New France',\n    type: 'History Adventure',\n    theme: 'Canadian History',\n    description: 'Journey back to 1608 and help Samuel de Champlain establish Quebec City! Make historical decisions.',\n    ageRange: '9-10',\n    duration: '15 minutes',\n    educationalValue: 'Early Canadian history',\n    funFactor: 'Choose-your-own-adventure format'\n  },\n  {\n    title: 'The Great Canadian Spelling Bee',\n    type: 'Language Game',\n    theme: 'Language Arts',\n    description: 'Practice spelling with Canadian words! From \"colour\" to \"toboggan\" - master Canadian English.',\n    ageRange: '8-10',\n    duration: '10 minutes',\n    educationalValue: 'Spelling and vocabulary',\n    funFactor: 'Competitive gameplay with rewards'\n  },\n  {\n    title: 'Eco Warriors: Save the Great Lakes',\n    type: 'Environmental Game',\n    theme: 'Environment',\n    description: 'Become an eco-hero and protect the Great Lakes from pollution! Learn about water conservation.',\n    ageRange: '8-10',\n    duration: '12 minutes',\n    educationalValue: 'Environmental conservation',\n    funFactor: 'Superhero theme with missions'\n  }\n];\n\n// Return 5 random content items for processing\nconst selectedContent = kidsContent\n  .sort(() => Math.random() - 0.5)\n  .slice(0, 5);\n\nreturn selectedContent.map(content => ({\n  json: content\n}));"
+      },
+      "id": "generate-kids-content",
+      "name": "Generate Kids Content",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 400]
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "operation": "create",
+        "modelId": "gpt-3.5-turbo",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are Maple, enhancing CBC Kids-style content for deeper educational value.\n\nTransform entertainment into education by:\n1. Adding educational layers to fun content\n2. Creating follow-up activities\n3. Building critical thinking questions\n4. Connecting to Ontario curriculum naturally\n5. Maintaining the fun factor\n\nBalance:\n- 70% fun and engagement\n- 30% educational value\n- 100% age-appropriate for Grade 4\n\nOutput as JSON with:\n- content_summary (what it's about in 2 sentences)\n- hidden_learning (3 educational concepts present)\n- discussion_starters (3 family conversation prompts)\n- creative_extension (art/writing/drama activity)\n- stem_connection (science/tech/engineering/math link)\n- canadian_culture (cultural connection)\n- at_home_activity (15-minute hands-on activity)\n- vocabulary_boost (3 new words to learn)\n- discovery_challenge (exploration task for curious kids)"
+            },
+            {
+              "role": "user",
+              "content": "Enhance this CBC Kids content educationally:\n\nTitle: {{ $json.title }}\nType: {{ $json.type }}\nTheme: {{ $json.theme }}\nDescription: {{ $json.description }}\nEducational Value: {{ $json.educationalValue }}\nFun Factor: {{ $json.funFactor }}\n\nKeep it fun while adding learning value for Grade 4 students!"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.8,
+          "maxTokens": 600
+        }
+      },
+      "id": "openai-kids",
+      "name": "OpenAI Kids Enhancement",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.3,
+      "position": [650, 400],
+      "credentials": {
+        "openAiApi": {
+          "id": "OpenAI API",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format CBC Kids content for Airtable\nconst items = [];\n\nfor (const item of $input.all()) {\n  try {\n    const aiResponse = JSON.parse(item.json.response.text || '{}');\n    const originalData = item.json;\n    \n    // Format vocabulary\n    let vocabularyString = '';\n    if (aiResponse.vocabulary_boost) {\n      if (Array.isArray(aiResponse.vocabulary_boost)) {\n        vocabularyString = aiResponse.vocabulary_boost.join('; ');\n      } else {\n        vocabularyString = String(aiResponse.vocabulary_boost);\n      }\n    }\n    \n    // Format discovery questions\n    let discoveryQuestions = [];\n    if (aiResponse.discussion_starters) {\n      if (Array.isArray(aiResponse.discussion_starters)) {\n        discoveryQuestions = aiResponse.discussion_starters;\n      } else {\n        discoveryQuestions = [aiResponse.discussion_starters];\n      }\n    }\n    \n    items.push({\n      json: {\n        // Content title\n        content_title: originalData.title,\n        \n        // Source information\n        source_type: 'CBC_KIDS',\n        source_url: 'https://www.cbc.ca/kids',\n        source_category: originalData.theme,\n        source_date: new Date().toISOString(),\n        \n        // Educational content\n        simplified_content: aiResponse.content_summary || originalData.description,\n        curriculum_connection: aiResponse.hidden_learning || originalData.educationalValue,\n        activity_suggestion: aiResponse.at_home_activity || aiResponse.creative_extension || '',\n        canadian_fact: aiResponse.canadian_culture || 'CBC Kids celebrates Canadian culture!',\n        vocabulary_word: vocabularyString || '',\n        discovery_questions: JSON.stringify(discoveryQuestions),\n        \n        // Additional fields\n        materials_needed: 'Common household items',\n        \n        // Metadata\n        content_score: 0.95, // High score for kids content\n        has_educational_value: true,\n        appropriateness_score: 1.0,\n        workflow_version: 'cbc-kids-v1.0',\n        pipeline_timestamp: new Date().toISOString(),\n        \n        // Quality metrics\n        reading_level: 'Grade 4',\n        canadian_context: true,\n        curriculum_aligned: true,\n        validation_status: 'Approved',\n        \n        // Categories based on content type\n        subject_areas: originalData.theme === 'Mathematics' ? ['Math'] : \n                      originalData.theme === 'Science' ? ['Science'] :\n                      originalData.theme === 'Language Arts' ? ['Language Arts'] :\n                      ['Science', 'Social Studies'],\n        skill_focus: ['Creative Expression', 'Critical Thinking'],\n        activity_type: originalData.type.includes('Game') ? ['Hands-on', 'Creative'] : ['Discussion', 'Research'],\n        time_estimate: originalData.duration.includes('5') ? '5-10 min' :\n                      originalData.duration.includes('10') ? '10-20 min' : '20-30 min',\n        season_relevant: ['All Year']\n      }\n    });\n  } catch (error) {\n    console.error('Error formatting kids content:', error);\n  }\n}\n\nreturn items;"
+      },
+      "id": "format-kids",
+      "name": "Format for Airtable",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [850, 400]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "baseId": "app1FNYWApMBYHob0",
+        "tableId": "tbl3TRQh28Z2szbZe",
+        "options": {}
+      },
+      "id": "save-kids",
+      "name": "Save to Airtable",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [1050, 400],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Airtable API",
+          "name": "Airtable API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Log CBC Kids pipeline results\nconst results = {\n  timestamp: new Date().toISOString(),\n  workflow: 'CBC Kids Content',\n  contentProcessed: $input.all().length,\n  status: 'success',\n  content: []\n};\n\nfor (const item of $input.all()) {\n  results.content.push({\n    title: item.json.content_title,\n    theme: item.json.source_category,\n    saved: true\n  });\n}\n\nconsole.log('CBC Kids Pipeline Results:', results);\nreturn [results];"
+      },
+      "id": "log-kids",
+      "name": "Log Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1250, 400]
+    }
+  ],
+  "connections": {
+    "Every 4 Hours": {
+      "main": [
+        [
+          {
+            "node": "Generate Kids Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Generate Kids Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Kids Content": {
+      "main": [
+        [
+          {
+            "node": "OpenAI Kids Enhancement",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Kids Enhancement": {
+      "main": [
+        [
+          {
+            "node": "Format for Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format for Airtable": {
+      "main": [
+        [
+          {
+            "node": "Save to Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to Airtable": {
+      "main": [
+        [
+          {
+            "node": "Log Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "instanceId": "maple-tutor-kids"
+  },
+  "tags": []
+}

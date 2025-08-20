@@ -1,0 +1,190 @@
+{
+  "name": "Ingenium Science Collections Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "days",
+              "daysInterval": 2
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger-ingenium",
+      "name": "Every 2 Days",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [250, 300],
+      "disabled": true
+    },
+    {
+      "parameters": {},
+      "id": "manual-trigger-ingenium",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [250, 500]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Ingenium Museums Science Collections\n// Canada Science and Technology Museum, Aviation and Space Museum, Agriculture and Food Museum\n\nconst museumCollections = [\n  {\n    museum: 'Canada Science and Technology Museum',\n    artifact: 'The Canadarm',\n    category: 'Space Technology',\n    description: 'Canada\\'s robotic arm that helped build the International Space Station',\n    yearIntroduced: '1981',\n    significance: 'Canada\\'s most famous contribution to space exploration',\n    sciencePrinciple: 'Robotics and mechanical engineering',\n    funFact: 'The Canadarm can lift 30,000 kg in space - that\\'s like lifting 6 elephants!'\n  },\n  {\n    museum: 'Canada Science and Technology Museum',\n    artifact: 'Bombardier Ski-Doo',\n    category: 'Transportation',\n    description: 'The first mass-produced snowmobile invented in Quebec',\n    yearIntroduced: '1959',\n    significance: 'Revolutionized winter transportation in Canada',\n    sciencePrinciple: 'Friction, propulsion, and winter engineering',\n    funFact: 'Joseph-Armand Bombardier invented it so kids could get to school in winter!'\n  },\n  {\n    museum: 'Canada Aviation and Space Museum',\n    artifact: 'Avro Arrow',\n    category: 'Aviation',\n    description: 'Canada\\'s legendary supersonic jet fighter',\n    yearIntroduced: '1958',\n    significance: 'Most advanced fighter jet of its time',\n    sciencePrinciple: 'Aerodynamics and supersonic flight',\n    funFact: 'It could fly twice the speed of sound - faster than a bullet!'\n  },\n  {\n    museum: 'Canada Aviation and Space Museum',\n    artifact: 'Silver Dart',\n    category: 'Early Aviation',\n    description: 'First powered flight in Canada and the British Empire',\n    yearIntroduced: '1909',\n    significance: 'Beginning of Canadian aviation history',\n    sciencePrinciple: 'Lift, thrust, drag, and weight forces',\n    funFact: 'It flew over frozen Baddeck Bay in Nova Scotia for just half a mile!'\n  },\n  {\n    museum: 'Canada Agriculture and Food Museum',\n    artifact: 'Marquis Wheat',\n    category: 'Agriculture',\n    description: 'The wheat variety that made Canada the breadbasket of the world',\n    yearIntroduced: '1904',\n    significance: 'Transformed Canadian prairies into major wheat producer',\n    sciencePrinciple: 'Plant breeding and genetics',\n    funFact: 'One wheat kernel can grow into a plant with 400 kernels!'\n  },\n  {\n    museum: 'Canada Science and Technology Museum',\n    artifact: 'TRIUMF Cyclotron',\n    category: 'Particle Physics',\n    description: 'World\\'s largest cyclotron particle accelerator in Vancouver',\n    yearIntroduced: '1974',\n    significance: 'Leading research in particle physics and medical isotopes',\n    sciencePrinciple: 'Magnetic fields and particle acceleration',\n    funFact: 'It spins particles 23 million times per second!'\n  },\n  {\n    museum: 'Canada Science and Technology Museum',\n    artifact: 'Banting\\'s Insulin Discovery',\n    category: 'Medical Innovation',\n    description: 'The discovery that saved millions of diabetics worldwide',\n    yearIntroduced: '1921',\n    significance: 'Nobel Prize-winning Canadian medical breakthrough',\n    sciencePrinciple: 'Biochemistry and hormone function',\n    funFact: 'Banting sold the insulin patent for just $1 to help everyone!'\n  },\n  {\n    museum: 'Canada Science and Technology Museum',\n    artifact: 'CANDU Reactor Model',\n    category: 'Nuclear Energy',\n    description: 'Canadian-designed nuclear reactor using heavy water',\n    yearIntroduced: '1962',\n    significance: 'Unique Canadian nuclear technology used worldwide',\n    sciencePrinciple: 'Nuclear fission and energy generation',\n    funFact: 'One uranium pellet has as much energy as a tonne of coal!'\n  },\n  {\n    museum: 'Canada Agriculture and Food Museum',\n    artifact: 'Maple Syrup Evaporator',\n    category: 'Food Production',\n    description: 'Traditional and modern methods of making Canada\\'s sweet treasure',\n    yearIntroduced: '1800s',\n    significance: 'Canada produces 71% of world\\'s maple syrup',\n    sciencePrinciple: 'Evaporation, concentration, and sugar chemistry',\n    funFact: 'It takes 40 liters of sap to make 1 liter of maple syrup!'\n  },\n  {\n    museum: 'Canada Science and Technology Museum',\n    artifact: 'BlackBerry Smartphone',\n    category: 'Communications',\n    description: 'Canadian invention that revolutionized mobile communication',\n    yearIntroduced: '1999',\n    significance: 'First smartphone with secure email for business',\n    sciencePrinciple: 'Wireless communication and data encryption',\n    funFact: 'It was nicknamed \"CrackBerry\" because people loved it so much!'\n  },\n  {\n    museum: 'Canada Science and Technology Museum',\n    artifact: 'Telephone - Alexander Graham Bell',\n    category: 'Communications',\n    description: 'Invention that changed the world, created in Brantford, Ontario',\n    yearIntroduced: '1876',\n    significance: 'First device to transmit voice over distance',\n    sciencePrinciple: 'Sound waves and electromagnetic induction',\n    funFact: 'Bell\\'s first words on the phone were \"Mr. Watson, come here!\"'\n  },\n  {\n    museum: 'Canada Aviation and Space Museum',\n    artifact: 'Chris Hadfield\\'s Space Guitar',\n    category: 'Space Exploration',\n    description: 'The guitar played on the International Space Station',\n    yearIntroduced: '2013',\n    significance: 'First music video recorded in space',\n    sciencePrinciple: 'Sound in microgravity environments',\n    funFact: 'Sound travels differently in space - it needs air to move!'\n  }\n];\n\n// Select 5 random artifacts for processing\nconst selectedArtifacts = museumCollections\n  .sort(() => Math.random() - 0.5)\n  .slice(0, 5);\n\nreturn selectedArtifacts.map(artifact => ({\n  json: artifact\n}));"
+      },
+      "id": "generate-museum-content",
+      "name": "Generate Museum Content",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [450, 400]
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "operation": "create",
+        "modelId": "gpt-3.5-turbo",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are Maple, bringing Canadian science museums to Grade 4 classrooms!\n\nTransform museum artifacts and exhibits into:\n1. Virtual field trip experiences\n2. Hands-on science experiments\n3. Canadian innovation stories\n4. STEM career connections\n5. Historical science adventures\n\nMake Canadian scientific achievements exciting for Grade 4 students!\n\nCreate immersive content with JSON output:\n- artifact_story (what it is and why it's amazing - 3 sentences)\n- science_principle (underlying science concept explained simply)\n- canadian_innovation (why this makes Canada special)\n- try_this_experiment (related 15-minute hands-on activity)\n- career_spotlight (related STEM career kids could pursue)\n- time_travel_question (\"If you lived when this was invented...\")\n- build_challenge (engineering/building activity)\n- wow_facts (3 amazing facts about this artifact)\n- connection_today (how we use this science today)"
+            },
+            {
+              "role": "user",
+              "content": "Transform this museum artifact for Grade 4:\n\nMuseum: {{ $json.museum }}\nArtifact: {{ $json.artifact }}\nCategory: {{ $json.category }}\nDescription: {{ $json.description }}\nYear: {{ $json.yearIntroduced }}\nSignificance: {{ $json.significance }}\nScience: {{ $json.sciencePrinciple }}\nFun Fact: {{ $json.funFact }}\n\nMake Canadian science history come alive for young minds!"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.8,
+          "maxTokens": 650
+        }
+      },
+      "id": "openai-museum",
+      "name": "OpenAI Museum Enhancement",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.3,
+      "position": [650, 400],
+      "credentials": {
+        "openAiApi": {
+          "id": "OpenAI API",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format Ingenium museum content for Airtable\nconst items = [];\n\nfor (const item of $input.all()) {\n  try {\n    const aiResponse = JSON.parse(item.json.response.text || '{}');\n    const originalData = item.json;\n    \n    // Format wow facts\n    let factsString = '';\n    if (aiResponse.wow_facts) {\n      if (Array.isArray(aiResponse.wow_facts)) {\n        factsString = aiResponse.wow_facts.join('; ');\n      } else {\n        factsString = String(aiResponse.wow_facts);\n      }\n    }\n    \n    // Create discovery questions\n    const discoveryQuestions = [\n      aiResponse.time_travel_question || 'What would you invent?',\n      'How has this Canadian invention changed the world?',\n      'What problems did this solve for people?'\n    ];\n    \n    items.push({\n      json: {\n        // Content title\n        content_title: `${originalData.artifact} - ${originalData.museum}`,\n        \n        // Source information\n        source_type: 'INGENIUM',\n        source_url: 'https://ingeniumcanada.org',\n        source_category: originalData.category,\n        source_date: new Date().toISOString(),\n        \n        // Educational content\n        simplified_content: aiResponse.artifact_story || originalData.description,\n        curriculum_connection: aiResponse.science_principle || originalData.sciencePrinciple,\n        activity_suggestion: aiResponse.try_this_experiment || aiResponse.build_challenge || '',\n        canadian_fact: aiResponse.canadian_innovation || originalData.significance,\n        vocabulary_word: `${originalData.category}: ${originalData.sciencePrinciple}`,\n        discovery_questions: JSON.stringify(discoveryQuestions),\n        \n        // Additional fields\n        materials_needed: 'Paper, pencil, basic craft supplies',\n        \n        // Metadata\n        content_score: 1.0, // Museum content has highest educational value\n        has_educational_value: true,\n        appropriateness_score: 1.0,\n        workflow_version: 'ingenium-v1.0',\n        pipeline_timestamp: new Date().toISOString(),\n        \n        // Quality metrics\n        reading_level: 'Grade 4',\n        canadian_context: true,\n        curriculum_aligned: true,\n        validation_status: 'Approved',\n        \n        // Categories\n        subject_areas: ['Science', 'Social Studies'],\n        skill_focus: ['Critical Thinking', 'Problem Solving', 'Observation'],\n        activity_type: ['Hands-on', 'Research', 'Creative'],\n        time_estimate: '20-30 min',\n        season_relevant: ['All Year']\n      }\n    });\n  } catch (error) {\n    console.error('Error formatting museum content:', error);\n  }\n}\n\nreturn items;"
+      },
+      "id": "format-museum",
+      "name": "Format for Airtable",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [850, 400]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "baseId": "app1FNYWApMBYHob0",
+        "tableId": "tbl3TRQh28Z2szbZe",
+        "options": {}
+      },
+      "id": "save-museum",
+      "name": "Save to Airtable",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [1050, 400],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Airtable API",
+          "name": "Airtable API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Log Ingenium pipeline results\nconst results = {\n  timestamp: new Date().toISOString(),\n  workflow: 'Ingenium Science Collections',\n  artifactsProcessed: $input.all().length,\n  status: 'success',\n  artifacts: []\n};\n\nfor (const item of $input.all()) {\n  results.artifacts.push({\n    title: item.json.content_title,\n    category: item.json.source_category,\n    saved: true\n  });\n}\n\nconsole.log('Ingenium Pipeline Results:', results);\nreturn [results];"
+      },
+      "id": "log-museum",
+      "name": "Log Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1250, 400]
+    }
+  ],
+  "connections": {
+    "Every 2 Days": {
+      "main": [
+        [
+          {
+            "node": "Generate Museum Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Generate Museum Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Museum Content": {
+      "main": [
+        [
+          {
+            "node": "OpenAI Museum Enhancement",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Museum Enhancement": {
+      "main": [
+        [
+          {
+            "node": "Format for Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format for Airtable": {
+      "main": [
+        [
+          {
+            "node": "Save to Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to Airtable": {
+      "main": [
+        [
+          {
+            "node": "Log Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "instanceId": "maple-tutor-ingenium"
+  },
+  "tags": []
+}

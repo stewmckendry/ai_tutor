@@ -1,0 +1,256 @@
+{
+  "name": "CBC to Education Content Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 2
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger-cbc",
+      "name": "Every 2 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [250, 300],
+      "disabled": true
+    },
+    {
+      "parameters": {},
+      "id": "manual-trigger-cbc",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [250, 500]
+    },
+    {
+      "parameters": {
+        "url": "https://www.cbc.ca/webfeed/rss/rss-technology",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "cbc-science-feed",
+      "name": "Fetch CBC Science News",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [450, 300]
+    },
+    {
+      "parameters": {
+        "url": "https://www.cbc.ca/webfeed/rss/rss-canada",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "cbc-canada-feed",
+      "name": "Fetch CBC Canada News",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [450, 500]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse CBC RSS feed and extract items\nconst xml = $input.all()[0].json.data;\nconst DOMParser = require('xmldom').DOMParser;\nconst parser = new DOMParser();\nconst doc = parser.parseFromString(xml, 'text/xml');\n\nconst items = doc.getElementsByTagName('item');\nconst articles = [];\n\n// Content filtering keywords to avoid\nconst AVOID_KEYWORDS = [\n  'death', 'killed', 'murder', 'violence', 'assault', 'war', 'conflict',\n  'terrorism', 'shooting', 'stabbing', 'crime', 'arrest', 'prison',\n  'politics', 'election', 'scandal', 'controversy', 'protest',\n  'covid', 'pandemic', 'virus', 'disease', 'cancer', 'illness'\n];\n\n// Educational keywords to prioritize\nconst EDUCATIONAL_KEYWORDS = [\n  'science', 'technology', 'nature', 'animal', 'space', 'planet',\n  'discovery', 'research', 'study', 'museum', 'education', 'school',\n  'environment', 'weather', 'climate', 'ocean', 'forest', 'wildlife',\n  'invention', 'innovation', 'experiment', 'learn', 'explore'\n];\n\nfor (let i = 0; i < Math.min(items.length, 10); i++) {\n  const item = items[i];\n  \n  const title = item.getElementsByTagName('title')[0]?.textContent || '';\n  const description = item.getElementsByTagName('description')[0]?.textContent || '';\n  const link = item.getElementsByTagName('link')[0]?.textContent || '';\n  const pubDate = item.getElementsByTagName('pubDate')[0]?.textContent || '';\n  const category = item.getElementsByTagName('category')[0]?.textContent || '';\n  \n  // Combined text for content filtering\n  const fullText = (title + ' ' + description).toLowerCase();\n  \n  // Check for inappropriate content\n  const hasInappropriate = AVOID_KEYWORDS.some(keyword => \n    fullText.includes(keyword)\n  );\n  \n  // Check for educational value\n  const hasEducational = EDUCATIONAL_KEYWORDS.some(keyword => \n    fullText.includes(keyword)\n  );\n  \n  // Calculate content score\n  const contentScore = hasEducational ? 1 : 0.5;\n  const appropriateness = hasInappropriate ? 0 : 1;\n  \n  // Only include appropriate content\n  if (appropriateness > 0) {\n    // Clean description by removing HTML tags\n    const cleanDescription = description\n      .replace(/<[^>]*>/g, '')\n      .replace(/\\[CDATA\\[|\\]\\]/g, '')\n      .trim();\n    \n    articles.push({\n      title: title.replace(/\\[CDATA\\[|\\]\\]/g, '').trim(),\n      description: cleanDescription,\n      link: link,\n      pubDate: new Date(pubDate).toISOString(),\n      category: category,\n      source: 'CBC',\n      contentScore: contentScore,\n      appropriateness: appropriateness,\n      hasEducationalValue: hasEducational\n    });\n  }\n}\n\n// Sort by educational value and return top 5\nconst topArticles = articles\n  .sort((a, b) => b.contentScore - a.contentScore)\n  .slice(0, 5);\n\nreturn topArticles;"
+      },
+      "id": "parse-and-filter-cbc",
+      "name": "Parse and Filter CBC Content",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [650, 400]
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "operation": "create",
+        "modelId": "gpt-3.5-turbo",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are Maple, an AI tutor creating educational content for Ontario Grade 4 students (ages 9-10). Transform news articles into age-appropriate educational activities.\n\nGuidelines:\n- Use Canadian English spelling (colour, centre, favourite)\n- Use metric measurements exclusively\n- Speak at Grade 4 reading level\n- Focus on discovery and curiosity\n- Connect to Ontario Grade 4 curriculum (Science, Math, Language Arts)\n- Avoid any mention of violence, politics, or mature themes\n- Make content engaging and interactive\n\nFor each article, create:\n1. A simplified explanation (2-3 sentences)\n2. A curriculum connection\n3. A hands-on activity\n4. A fun Canadian fact\n5. A vocabulary word with definition\n6. 3 discovery questions\n\nOutput as JSON with these exact fields:\n- simplified_content\n- curriculum_connection\n- activity_suggestion\n- canadian_fact\n- vocabulary_word\n- discovery_questions (array of 3)"
+            },
+            {
+              "role": "user", 
+              "content": "Transform this CBC article into Grade 4 educational content:\n\nTitle: {{ $json.title }}\nDescription: {{ $json.description }}\nCategory: {{ $json.category }}\n\nRemember to make it engaging for 9-10 year olds and connect to Canadian context!"
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.7,
+          "maxTokens": 600
+        }
+      },
+      "id": "openai-enrichment-cbc",
+      "name": "OpenAI Educational Enrichment",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.3,
+      "position": [850, 400],
+      "credentials": {
+        "openAiApi": {
+          "id": "OpenAI API",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format data for Airtable storage\nconst items = [];\n\nfor (const item of $input.all()) {\n  try {\n    // Parse the AI response\n    const aiResponse = JSON.parse(item.json.response.text || '{}');\n    const originalData = item.json;\n    \n    items.push({\n      json: {\n        // Source information\n        source_type: 'CBC_NEWS',\n        source_url: originalData.link,\n        source_title: originalData.title,\n        source_category: originalData.category,\n        source_date: originalData.pubDate,\n        \n        // Educational content\n        simplified_content: aiResponse.simplified_content || '',\n        curriculum_connection: aiResponse.curriculum_connection || '',\n        activity_suggestion: aiResponse.activity_suggestion || '',\n        canadian_fact: aiResponse.canadian_fact || '',\n        vocabulary_word: aiResponse.vocabulary_word || '',\n        discovery_questions: JSON.stringify(aiResponse.discovery_questions || []),\n        \n        // Metadata\n        content_score: originalData.contentScore,\n        has_educational_value: originalData.hasEducationalValue,\n        workflow_version: 'cbc-v1.0',\n        pipeline_timestamp: new Date().toISOString(),\n        \n        // Quality metrics\n        reading_level: 'Grade 4',\n        canadian_context: true,\n        curriculum_aligned: true\n      }\n    });\n  } catch (error) {\n    console.error('Error processing item:', error);\n  }\n}\n\nreturn items;"
+      },
+      "id": "format-for-airtable-cbc",
+      "name": "Format for Airtable",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1050, 400]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "baseId": "={{ $env.AIRTABLE_BASE_ID }}",
+        "tableId": "Canadian_Content",
+        "options": {}
+      },
+      "id": "save-to-airtable-cbc",
+      "name": "Save to Airtable",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [1250, 400],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Airtable API",
+          "name": "Airtable API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Log success and errors\nconst results = {\n  timestamp: new Date().toISOString(),\n  workflow: 'CBC to Education Content',\n  articlesProcessed: $input.all().length,\n  status: 'success',\n  details: []\n};\n\nfor (const item of $input.all()) {\n  results.details.push({\n    title: item.json.source_title,\n    saved: true,\n    educationalValue: item.json.has_educational_value\n  });\n}\n\nconsole.log('Pipeline Results:', results);\nreturn [results];"
+      },
+      "id": "log-results-cbc",
+      "name": "Log Results",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1450, 400]
+    }
+  ],
+  "connections": {
+    "Every 2 Hours": {
+      "main": [
+        [
+          {
+            "node": "Fetch CBC Science News",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch CBC Canada News",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch CBC Science News",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch CBC Canada News",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch CBC Science News": {
+      "main": [
+        [
+          {
+            "node": "Parse and Filter CBC Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch CBC Canada News": {
+      "main": [
+        [
+          {
+            "node": "Parse and Filter CBC Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse and Filter CBC Content": {
+      "main": [
+        [
+          {
+            "node": "OpenAI Educational Enrichment",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Educational Enrichment": {
+      "main": [
+        [
+          {
+            "node": "Format for Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format for Airtable": {
+      "main": [
+        [
+          {
+            "node": "Save to Airtable",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Save to Airtable": {
+      "main": [
+        [
+          {
+            "node": "Log Results",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "instanceId": "maple-tutor-cbc"
+  },
+  "tags": []
+}

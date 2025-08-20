@@ -1,0 +1,304 @@
+{
+  "name": "Ontario Curriculum PDF Extraction Pipeline",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "weeks",
+              "weeksInterval": 1
+            }
+          ]
+        }
+      },
+      "id": "schedule-trigger-curriculum",
+      "name": "Weekly Update",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.1,
+      "position": [250, 300],
+      "disabled": true
+    },
+    {
+      "parameters": {},
+      "id": "manual-trigger-curriculum",
+      "name": "Manual Trigger",
+      "type": "n8n-nodes-base.manualTrigger",
+      "typeVersion": 1,
+      "position": [250, 500]
+    },
+    {
+      "parameters": {
+        "url": "https://www.dcp.edu.gov.on.ca/en/curriculum",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "text"
+            }
+          }
+        }
+      },
+      "id": "fetch-curriculum-page",
+      "name": "Fetch Curriculum Landing Page",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [450, 400]
+    },
+    {
+      "parameters": {
+        "extractionValues": {
+          "values": [
+            {
+              "key": "pdf_links",
+              "cssSelector": "a[href*='.pdf']",
+              "returnValue": "attribute",
+              "attribute": "href"
+            },
+            {
+              "key": "subject_names",
+              "cssSelector": "a[href*='.pdf']",
+              "returnValue": "text"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "extract-pdf-links",
+      "name": "Extract PDF Links",
+      "type": "n8n-nodes-base.htmlExtract",
+      "typeVersion": 1,
+      "position": [650, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Filter and organize curriculum PDFs\nconst items = [];\nconst processedLinks = new Set();\n\n// Priority subjects for Grade 4\nconst prioritySubjects = [\n  'science',\n  'mathematics',\n  'language',\n  'arts',\n  'social studies',\n  'french',\n  'health'\n];\n\n// Grade 4 relevant documents\nconst grade4Keywords = [\n  'elementary',\n  'grade 4',\n  'grades 3-6',\n  'grades 1-8',\n  'junior'\n];\n\nfor (const item of $input.all()) {\n  const links = item.json.pdf_links || [];\n  const names = item.json.subject_names || [];\n  \n  for (let i = 0; i < links.length; i++) {\n    const link = links[i];\n    const name = names[i] || '';\n    \n    // Skip if already processed\n    if (processedLinks.has(link)) continue;\n    \n    // Check if relevant for Grade 4\n    const linkLower = link.toLowerCase();\n    const nameLower = name.toLowerCase();\n    \n    const isRelevantSubject = prioritySubjects.some(subject => \n      linkLower.includes(subject) || nameLower.includes(subject)\n    );\n    \n    const isElementary = grade4Keywords.some(keyword => \n      linkLower.includes(keyword.replace(' ', '')) || nameLower.includes(keyword)\n    );\n    \n    if (isRelevantSubject || isElementary) {\n      // Ensure full URL\n      const fullUrl = link.startsWith('http') ? link : \n        link.startsWith('/') ? `https://www.dcp.edu.gov.on.ca${link}` :\n        `https://www.dcp.edu.gov.on.ca/${link}`;\n      \n      // Determine subject from URL or name\n      let subject = 'General';\n      for (const subj of prioritySubjects) {\n        if (linkLower.includes(subj) || nameLower.includes(subj)) {\n          subject = subj.charAt(0).toUpperCase() + subj.slice(1);\n          break;\n        }\n      }\n      \n      items.push({\n        json: {\n          pdf_url: fullUrl,\n          subject: subject,\n          document_name: name || link.split('/').pop(),\n          grade_level: 'Elementary',\n          process_for_grade: 4\n        }\n      });\n      \n      processedLinks.add(link);\n    }\n  }\n}\n\n// Limit to first 5 PDFs for initial processing\nreturn items.slice(0, 5);"
+      },
+      "id": "filter-grade4-pdfs",
+      "name": "Filter Grade 4 Relevant PDFs",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [850, 400]
+    },
+    {
+      "parameters": {
+        "url": "={{ $json.pdf_url }}",
+        "options": {
+          "response": {
+            "response": {
+              "responseFormat": "file"
+            }
+          }
+        }
+      },
+      "id": "download-pdf",
+      "name": "Download Curriculum PDF",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.1,
+      "position": [1050, 400]
+    },
+    {
+      "parameters": {
+        "operation": "text",
+        "options": {}
+      },
+      "id": "extract-pdf-text",
+      "name": "Extract PDF Text",
+      "type": "n8n-nodes-base.extractFromFile",
+      "typeVersion": 1,
+      "position": [1250, 400]
+    },
+    {
+      "parameters": {
+        "jsCode": "// Parse curriculum structure from extracted text\nconst items = [];\n\nfor (const item of $input.all()) {\n  const text = item.json.data || '';\n  const metadata = item.json;\n  \n  // Parse Grade 4 specific content\n  const grade4Sections = extractGrade4Content(text);\n  \n  for (const section of grade4Sections) {\n    items.push({\n      json: {\n        subject: metadata.subject,\n        document_source: metadata.pdf_url,\n        grade: 4,\n        strand: section.strand,\n        overall_expectation: section.overall,\n        specific_expectations: section.specific,\n        examples: section.examples,\n        raw_text: section.text.substring(0, 2000), // Limit for processing\n        needs_enrichment: true\n      }\n    });\n  }\n}\n\nfunction extractGrade4Content(text) {\n  const sections = [];\n  \n  // Look for Grade 4 patterns\n  const grade4Patterns = [\n    /Grade 4[\\s\\S]*?(?=Grade [5-8]|$)/gi,\n    /Grade Four[\\s\\S]*?(?=Grade|$)/gi,\n    /4\\. [\\s\\S]*?(?=\\d\\.|$)/gi\n  ];\n  \n  for (const pattern of grade4Patterns) {\n    const matches = text.match(pattern) || [];\n    \n    for (const match of matches) {\n      // Extract expectations\n      const overallMatch = match.match(/Overall Expectation[s]?:?([\\s\\S]*?)(?=Specific|$)/i);\n      const specificMatch = match.match(/Specific Expectation[s]?:?([\\s\\S]*?)(?=Example|Teacher|$)/i);\n      const exampleMatch = match.match(/Example[s]?:?([\\s\\S]*?)(?=\\n\\n|$)/i);\n      \n      // Extract strand/topic\n      const strandMatch = match.match(/Strand [A-Z]:?\\s*([^\\n]+)/i) || \n                         match.match(/Topic:?\\s*([^\\n]+)/i) ||\n                         match.match(/Unit:?\\s*([^\\n]+)/i);\n      \n      if (overallMatch || specificMatch) {\n        sections.push({\n          strand: strandMatch ? strandMatch[1].trim() : 'General',\n          overall: overallMatch ? overallMatch[1].trim().substring(0, 500) : '',\n          specific: specificMatch ? specificMatch[1].trim().substring(0, 1000) : '',\n          examples: exampleMatch ? exampleMatch[1].trim().substring(0, 500) : '',\n          text: match.substring(0, 2000)\n        });\n      }\n    }\n  }\n  \n  // If no Grade 4 specific content found, extract general elementary content\n  if (sections.length === 0) {\n    const elementaryPattern = /Elementary[\\s\\S]{0,5000}/gi;\n    const elementaryMatches = text.match(elementaryPattern) || [];\n    \n    if (elementaryMatches.length > 0) {\n      sections.push({\n        strand: 'Elementary Curriculum',\n        overall: 'General elementary expectations',\n        specific: elementaryMatches[0].substring(0, 1000),\n        examples: '',\n        text: elementaryMatches[0].substring(0, 2000)\n      });\n    }\n  }\n  \n  return sections.length > 0 ? sections : [{\n    strand: 'Document Overview',\n    overall: 'Curriculum document for processing',\n    specific: text.substring(0, 1000),\n    examples: '',\n    text: text.substring(0, 2000)\n  }];\n}\n\nreturn items;"
+      },
+      "id": "parse-curriculum-structure",
+      "name": "Parse Curriculum Structure",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1450, 400]
+    },
+    {
+      "parameters": {
+        "resource": "assistant",
+        "operation": "create",
+        "modelId": "gpt-4",
+        "messages": {
+          "values": [
+            {
+              "role": "system",
+              "content": "You are an Ontario curriculum specialist. Extract and structure Grade 4 curriculum expectations.\n\nFrom the provided curriculum text, create structured learning objectives that are:\n1. Clear and specific for Grade 4 level\n2. Actionable for teachers and students\n3. Aligned with Ontario curriculum standards\n4. Written in student-friendly language\n\nProvide output as JSON with:\n- strand_name (curriculum strand/topic)\n- big_idea (overarching concept in kid-friendly language)\n- learning_goals (3-5 specific things students will learn)\n- success_criteria (how students show understanding)\n- key_vocabulary (important terms with simple definitions)\n- real_world_connections (how this applies to students' lives)\n- cross_curricular_links (connections to other subjects)\n- indigenous_perspectives (where applicable)\n- sample_activities (2-3 activity ideas)\n- assessment_suggestions (ways to check understanding)"
+            },
+            {
+              "role": "user",
+              "content": "Extract Grade 4 curriculum from:\n\nSubject: {{ $json.subject }}\nStrand: {{ $json.strand }}\nOverall Expectation: {{ $json.overall_expectation }}\nSpecific Expectations: {{ $json.specific_expectations }}\nExamples: {{ $json.examples }}\n\nCreate structured, student-friendly curriculum content."
+            }
+          ]
+        },
+        "options": {
+          "temperature": 0.3,
+          "maxTokens": 800
+        }
+      },
+      "id": "openai-curriculum-extraction",
+      "name": "OpenAI Curriculum Structuring",
+      "type": "@n8n/n8n-nodes-langchain.openAi",
+      "typeVersion": 1.3,
+      "position": [1650, 400],
+      "credentials": {
+        "openAiApi": {
+          "id": "OpenAI API",
+          "name": "OpenAI API"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Format curriculum data for Airtable storage\nconst items = [];\n\nfor (const item of $input.all()) {\n  try {\n    const aiResponse = JSON.parse(item.json.response.text || '{}');\n    const originalData = item.json;\n    \n    items.push({\n      json: {\n        // Curriculum identification\n        subject: originalData.subject,\n        grade_level: 4,\n        strand: aiResponse.strand_name || originalData.strand,\n        document_source: originalData.document_source,\n        \n        // Learning objectives\n        big_idea: aiResponse.big_idea || '',\n        learning_goals: JSON.stringify(aiResponse.learning_goals || []),\n        success_criteria: JSON.stringify(aiResponse.success_criteria || []),\n        \n        // Educational content\n        overall_expectation: originalData.overall_expectation,\n        specific_expectations: originalData.specific_expectations,\n        key_vocabulary: JSON.stringify(aiResponse.key_vocabulary || {}),\n        \n        // Connections and context\n        real_world_connections: aiResponse.real_world_connections || '',\n        cross_curricular_links: JSON.stringify(aiResponse.cross_curricular_links || []),\n        indigenous_perspectives: aiResponse.indigenous_perspectives || '',\n        \n        // Activities and assessment\n        sample_activities: JSON.stringify(aiResponse.sample_activities || []),\n        assessment_suggestions: JSON.stringify(aiResponse.assessment_suggestions || []),\n        \n        // Metadata\n        extraction_date: new Date().toISOString(),\n        workflow_version: 'curriculum-extract-v1.0',\n        ai_enriched: true,\n        validation_status: 'Pending Review'\n      }\n    });\n  } catch (error) {\n    console.error('Error formatting curriculum:', error);\n  }\n}\n\nreturn items;"
+      },
+      "id": "format-curriculum-data",
+      "name": "Format for Curriculum Table",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [1850, 400]
+    },
+    {
+      "parameters": {
+        "operation": "create",
+        "baseId": "app1FNYWApMBYHob0",
+        "tableId": "Ontario_Curriculum_Standards",
+        "options": {}
+      },
+      "id": "save-curriculum-standards",
+      "name": "Save to Curriculum Table",
+      "type": "n8n-nodes-base.airtable",
+      "typeVersion": 2,
+      "position": [2050, 400],
+      "credentials": {
+        "airtableTokenApi": {
+          "id": "Airtable API",
+          "name": "Airtable API"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Weekly Update": {
+      "main": [
+        [
+          {
+            "node": "Fetch Curriculum Landing Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Manual Trigger": {
+      "main": [
+        [
+          {
+            "node": "Fetch Curriculum Landing Page",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Curriculum Landing Page": {
+      "main": [
+        [
+          {
+            "node": "Extract PDF Links",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract PDF Links": {
+      "main": [
+        [
+          {
+            "node": "Filter Grade 4 Relevant PDFs",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Grade 4 Relevant PDFs": {
+      "main": [
+        [
+          {
+            "node": "Download Curriculum PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Download Curriculum PDF": {
+      "main": [
+        [
+          {
+            "node": "Extract PDF Text",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract PDF Text": {
+      "main": [
+        [
+          {
+            "node": "Parse Curriculum Structure",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Curriculum Structure": {
+      "main": [
+        [
+          {
+            "node": "OpenAI Curriculum Structuring",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "OpenAI Curriculum Structuring": {
+      "main": [
+        [
+          {
+            "node": "Format for Curriculum Table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format for Curriculum Table": {
+      "main": [
+        [
+          {
+            "node": "Save to Curriculum Table",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "staticData": null,
+  "meta": {
+    "instanceId": "maple-tutor-curriculum"
+  },
+  "tags": []
+}
