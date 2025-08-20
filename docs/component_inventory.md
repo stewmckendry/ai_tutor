@@ -4,7 +4,7 @@
 
 This inventory catalogs all reusable components in the AI Tutor project. Each component is documented with its purpose, location, and usage patterns to ensure consistency and reusability across the application.
 
-**Last Updated**: Issue #1d - Integration (2025-08-18)
+**Last Updated**: Issue #18 - n8n Content Pipeline (2025-08-19)
 
 ---
 
@@ -960,3 +960,94 @@ class ChatResponse(BaseModel):
 - **Frontend**: Content will be displayed through MessageItem components with TODO highlighting
 - **Caching**: In-memory cache with configurable TTL for performance
 - **Fallback**: Static content ensures operation without Airtable connection
+
+---
+
+## 🔄 Content Pipeline Components (Issue #18)
+
+### n8n Workflow
+**Path**: `n8n/workflows/weather_to_education_poc.json`  
+**Purpose**: Automated content pipeline for weather-based educational content  
+**Type**: n8n workflow definition  
+
+**Components**:
+- **Schedule Trigger**: Hourly execution (disabled by default)
+- **Manual Trigger**: On-demand testing
+- **Weather Fetching**: Toronto & Vancouver RSS feeds
+- **XML Parsing**: Extract temperature, condition, location
+- **OpenAI Enrichment**: Grade 4 content generation
+- **Data Formatting**: Airtable record preparation
+- **Airtable Storage**: Dynamic_Content_Test table
+- **Error Handling**: Logging and status tracking
+
+**Features**:
+- Environment Canada weather integration
+- Grade 4 curriculum alignment
+- Canadian spelling and context
+- Science curriculum connections
+- Activity suggestions generation
+
+### Pipeline Configuration
+**Path**: `n8n/docker-compose.yml`  
+**Purpose**: n8n container deployment configuration  
+**Features**:
+- Docker-based deployment
+- Persistent data storage
+- Basic authentication
+- Toronto timezone configuration
+- Metrics collection enabled
+
+### Setup Scripts
+**Path**: `n8n/setup.sh`  
+**Purpose**: Automated n8n environment setup  
+**Features**:
+- Docker dependency checking
+- Container lifecycle management
+- Credential configuration guidance
+- Status monitoring
+
+### Monitoring Tools
+**Path**: `n8n/monitor.py`  
+**Purpose**: Pipeline execution monitoring and metrics  
+**Features**:
+- Execution success rate tracking
+- Performance timing analysis
+- Error pattern identification
+- Hourly distribution reporting
+
+**Path**: `n8n/validate_data.py`  
+**Purpose**: Data quality validation for generated content  
+**Features**:
+- Required field validation
+- Canadian spelling verification
+- Grade 4 appropriateness checking
+- Science connection validation
+
+### Airtable Schema
+**Path**: `n8n/airtable_schema.md`  
+**Purpose**: Dynamic_Content_Test table structure documentation  
+**Table**: Dynamic_Content_Test (app1FNYWApMBYHob0/tblPNfN103WTygeub)  
+**Fields**: 11 content fields + metadata + timestamps
+
+### Documentation
+**Path**: `docs/n8n_pipeline.md`  
+**Purpose**: Comprehensive pipeline documentation  
+**Sections**: Architecture, setup, testing, monitoring, troubleshooting
+
+**Path**: `n8n/README.md`  
+**Purpose**: Quick start guide for pipeline setup  
+
+**Path**: `n8n/TESTING_CHECKLIST.md`  
+**Purpose**: Complete testing procedures and validation steps  
+
+**Path**: `n8n/CREDENTIALS.md`  
+**Purpose**: API key configuration reference  
+
+### Pipeline Summary
+- **Total Workflow Nodes**: 9 (triggers, processing, storage, error handling)
+- **Data Sources**: Environment Canada RSS feeds (2 cities)
+- **AI Integration**: OpenAI GPT-3.5-turbo for content enrichment
+- **Storage**: Airtable Dynamic_Content_Test table
+- **Execution**: Hourly schedule with manual override
+- **Monitoring**: Comprehensive metrics and quality validation
+- **Documentation**: 8 files covering setup, testing, and operations
